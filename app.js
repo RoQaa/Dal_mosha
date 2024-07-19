@@ -16,6 +16,7 @@ const ingradientRouter = require('./routes/ingradientRouter');
 const invoiceRouter = require('./routes/invoiceRouter');
 const sellingPointRouter = require('./routes/selling-points.route')
 const paymentMethodRouter = require('./routes/payment-method.route')
+const clientTypeRouter = require('./routes/client-type.route')
 const AppError = require(`${__dirname}/utils/appError`);
 
 const globalErrorHandler = require(`${__dirname}/controllers/errorController`);
@@ -31,16 +32,16 @@ app.use(cors());
 app.options('*', cors())
 */
 app.use((req, res, next) => {
-  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-  next();
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    next();
 });
 
 const corsOptions = {
-  origin: 'http://localhost:5173',
-  optionsSuccessStatus: 200 // For legacy browser support
+    origin: 'http://localhost:5173',
+    optionsSuccessStatus: 200 // For legacy browser support
 };
 app.use(cors(corsOptions));
-app.options('*',cors(corsOptions))
+app.options('*', cors(corsOptions))
 // Poclicy for blocking images
 app.use((req, res, next) => {
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
@@ -55,7 +56,7 @@ if (process.env.NODE_ENV === 'development') {
      logAllReqHeader: true,
    });
    */
-   
+
 }
 
 //Limit requests from same API
