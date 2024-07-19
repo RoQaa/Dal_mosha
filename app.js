@@ -25,6 +25,10 @@ const app = express();
 app.use(helmet()); // set el htttp headers property
 
 
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+});
 
 
 app.use(cors());
@@ -43,6 +47,7 @@ if (process.env.NODE_ENV === 'development') {
     logAllReqHeader: true,
   });
   */
+  
 }
 
 //Limit requests from same API

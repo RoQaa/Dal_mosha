@@ -1,5 +1,6 @@
 const multer = require('multer')
 const sharp = require('sharp');
+const mongoose=require('mongoose')
 const fs =require('fs')
 const Invoice=require('../models/invoiceModel')
 const AppError=require('../utils/appError')
@@ -38,34 +39,37 @@ exports.resizeInvoicePhoto = catchAsync(async (req, res, next) => {
 
 //PuT
 exports.createInvoice=catchAsync(async(req,res,next)=>{
-    
-    
-    let doc;
-    if(!req.body.code){
-        doc = new Invoice(req.body);
-      const id = doc._id.toString();
 
-      if (req.file) {
-        
-        req.file.filename = `Ingredient-${id}-${Date.now()}.jpeg`;
-        
+
+    console.log('Request received:', req.body);
+
+    let updateData = { ...req.body };
+    
+    if (req.file) {
+        console.log('Processing file...');
+        const id = req.body.invoiceId || new mongoose.Types.ObjectId(); // Generate a new ObjectId if not provided
+        req.file.filename = `Invoice-${id}-${Date.now()}.jpeg`;
+
         await sharp(req.file.buffer)
-          .resize(500, 500)
-          .toFormat('jpeg')
-          .jpeg({ quality: 90 })
-          .toFile(`public\\img\\Invoice\\${req.file.filename}`);
-        doc.backgroundImage = `public\\img\\Invoice\\${req.file.filename}`;
-      }
-
-      await doc.save();
-    
+            .resize(500, 500)
+            .toFormat('jpeg')
+            .jpeg({ quality: 90 })
+            .toFile(`public\\img\\Invoice\\${req.file.filename}`);
+        
+        updateData.backgroundImage = `public\\img\\Invoice\\${req.file.filename}`;
     }
-    doc=await Invoice.findByIdAndUpdate(req.body.id,req.body,{new:true,runValidators:true})
-
-    res.status(201).json({
-      status: true,
-      message: "Invoice Created Successfully",
-      data:doc
+   
+    const doc = await Invoice.findByIdAndUpdate(
+         req.body.invoiceId ,
+        updateData,
+        { new: true, upsert: true, runValidators: true }
+    );
+    console.log("here")
+    res.status(200).json({
+        status: true,
+        message: "Invoice Created or Updated Successfully",
+        data: doc
+    });
       
     });
     
@@ -73,7 +77,7 @@ exports.createInvoice=catchAsync(async(req,res,next)=>{
     
        
     
-      })
+
 
 
 
