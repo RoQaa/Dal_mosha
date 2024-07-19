@@ -13,9 +13,9 @@ const repoSchema = new mongoose.Schema({
             type:String
         },
         
-        inventory:{
+        place:{
             type:mongoose.Schema.ObjectId,
-            ref:"Inventory",
+            ref:"place",
             required:"must have In Inventory"
         }
         

@@ -15,9 +15,9 @@ const invoiceSchema = new mongoose.Schema({
         type:String,
         required:[true,'code required']
     },
-    image:{
+    backgroundImage:{
         type:String,
-        required:[true,'must have image']
+        required:[true,'must have backgroundImage']
     },
     discount:{
         type:Number
@@ -35,7 +35,8 @@ const invoiceSchema = new mongoose.Schema({
         type:mongoose.Schema.ObjectId,
         ref:'Ingradient',
         required:[true,'ingredient required']
-    }
+    },
+    expiryDate:Date
 })
 
 

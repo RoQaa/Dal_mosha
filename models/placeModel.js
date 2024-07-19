@@ -1,5 +1,5 @@
 const mongoose=require('mongoose')
-const inventorySchema=mongoose.Schema({
+const placeSchema=mongoose.Schema({
     name:{
         type:String,
         required:[true,'must have a name'],

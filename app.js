@@ -12,7 +12,8 @@ const userRouter=require('./routes/userRouter')
 const repoRouter =require('./routes/repoRouter');
 const categoryRouter=require('./routes/categoryRouter')
 const unitRouter=require('./routes/unitRouter')
-const ingradientRouter=require('./routes/ingradientRouter')
+const ingradientRouter=require('./routes/ingradientRouter');
+const invoiceRouter = require('./routes/invoiceRouter');
 const AppError = require(`${__dirname}/utils/appError`);
 
 const globalErrorHandler = require(`${__dirname}/controllers/errorController`);
@@ -87,6 +88,7 @@ app.use('/api/v1/category',categoryRouter)
 app.use('/api/v1/user',userRouter)
 app.use('/api/v1/unit',unitRouter)
 app.use('/api/v1/ingradient',ingradientRouter)
+app.use('/api/v1/invoice',invoiceRouter)
 app.all('*', (req, res, next) => {
 
 return  next(
