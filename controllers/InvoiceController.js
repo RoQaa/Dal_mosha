@@ -24,11 +24,11 @@ const upload = multer({
 exports.uploadInvoicePhoto = upload.single('backgroundImage');
 
 exports.resizeInvoicePhoto = catchAsync(async (req, res, next) => {
-    let id 
+  
     if (!req.file) return next();
-    if(req.params.id){
-    id=req.params.id;
-    }
+    let id 
+    if(req.body.id){ id=req.body.id;}
+    
     else{
         id=new mongoose.Types.ObjectId();
     }
@@ -45,9 +45,10 @@ exports.resizeInvoicePhoto = catchAsync(async (req, res, next) => {
 
 //PuT
 exports.createInvoice=catchAsync(async(req,res,next)=>{
+
     const doc = await Invoice.findOneAndUpdate(
         { _id: req.body.invoiceId || new mongoose.Types.ObjectId() },
-        updateData,
+        req.body,
         { new: true, upsert: true, runValidators: true }
     );
 

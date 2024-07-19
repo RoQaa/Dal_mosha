@@ -35,7 +35,7 @@ const corsOptions = {
   optionsSuccessStatus: 200 // For legacy browser support
 };
 app.use(cors(corsOptions));
-app.options('*',cors())
+app.options('*',cors(corsOptions))
 // Poclicy for blocking images
 app.use((req, res, next) => {
   res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
