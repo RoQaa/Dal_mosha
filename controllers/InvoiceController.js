@@ -1,7 +1,7 @@
 const multer = require('multer')
 const sharp = require('sharp');
-const mongoose=require('mongoose')
 const fs =require('fs')
+const mongoose=require('mongoose')
 const Invoice=require('../models/invoiceModel')
 const AppError=require('../utils/appError')
 const {catchAsync}=require('../utils/catchAsync')
@@ -24,9 +24,15 @@ const upload = multer({
 exports.uploadInvoicePhoto = upload.single('backgroundImage');
 
 exports.resizeInvoicePhoto = catchAsync(async (req, res, next) => {
+    let id 
     if (!req.file) return next();
-
-    req.file.filename = `Invoice-${req.params.id}-${Date.now()}.jpeg`;
+    if(req.params.id){
+    id=req.params.id;
+    }
+    else{
+        id=new mongoose.Types.ObjectId();
+    }
+    req.file.filename = `Invoice-${id}-${Date.now()}.jpeg`;
 
     await sharp(req.file.buffer)
         .resize(1300, 800)
@@ -39,37 +45,20 @@ exports.resizeInvoicePhoto = catchAsync(async (req, res, next) => {
 
 //PuT
 exports.createInvoice=catchAsync(async(req,res,next)=>{
-
-
-    console.log('Request received:', req.body);
-
-    let updateData = { ...req.body };
-    
-    if (req.file) {
-        console.log('Processing file...');
-        const id = req.body.invoiceId || new mongoose.Types.ObjectId(); // Generate a new ObjectId if not provided
-        req.file.filename = `Invoice-${id}-${Date.now()}.jpeg`;
-
-        await sharp(req.file.buffer)
-            .resize(500, 500)
-            .toFormat('jpeg')
-            .jpeg({ quality: 90 })
-            .toFile(`public\\img\\Invoice\\${req.file.filename}`);
-        
-        updateData.backgroundImage = `public\\img\\Invoice\\${req.file.filename}`;
-    }
-   
-    const doc = await Invoice.findByIdAndUpdate(
-         req.body.invoiceId ,
+    const doc = await Invoice.findOneAndUpdate(
+        { _id: req.body.invoiceId || new mongoose.Types.ObjectId() },
         updateData,
         { new: true, upsert: true, runValidators: true }
     );
-    console.log("here")
+
+    
+    
+    
+    
     res.status(200).json({
-        status: true,
-        message: "Invoice Created or Updated Successfully",
-        data: doc
-    });
+      status: true,
+      message: "Invoice Created Successfully",
+      data:doc
       
     });
     
@@ -77,7 +66,7 @@ exports.createInvoice=catchAsync(async(req,res,next)=>{
     
        
     
-
+      })
 
 
 

@@ -30,8 +30,11 @@ app.use((req, res, next) => {
   next();
 });
 
-
-app.use(cors());
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  optionsSuccessStatus: 200 // For legacy browser support
+};
+app.use(cors(corsOptions));
 app.options('*',cors())
 // Poclicy for blocking images
 app.use((req, res, next) => {
