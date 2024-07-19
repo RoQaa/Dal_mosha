@@ -44,17 +44,22 @@ const invoiceSchema = new mongoose.Schema({
         required:[true,'ingredient required']
     },
    
+},{
+  toJSON:{virtuals:true},
+  toObject:{virtuals:true}
 })
-
+invoiceSchema.virtual('totalPrice').get(function(){
+  return (this.price*this.quantity)+this.tax-this.discount;
+}); 
 // Pre-save hook
 invoiceSchema.pre('findOneAndUpdate', async function(next) {
-  const invoice = this;
+  const invoice = this._update;
 
   try {
     const ingredient = await Ingredient.findById(invoice.ingradient);
     if (ingredient) {
       ingredient.expiryDate = invoice.exp;
-      ingredient.stock = (ingredient.stock || 0) + invoice.quantity; // Sum stock
+      ingredient.stock = Number(ingredient.stock || 0) + Number(invoice.quantity); // Sum stock
       await ingredient.save();
     }
     next();
@@ -62,6 +67,8 @@ invoiceSchema.pre('findOneAndUpdate', async function(next) {
     next(error);
   }
 });
+
+
 
 invoiceSchema.pre(/^find/,function(next){
     this.find().populate({
@@ -73,3 +80,4 @@ invoiceSchema.pre(/^find/,function(next){
 
 const Invoice=mongoose.model('Invoice',invoiceSchema)
 module.exports=Invoice;
+//TODO: Status تم  مراجعة والقبول 
