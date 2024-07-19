@@ -36,7 +36,7 @@ const invoiceSchema = new mongoose.Schema({
         type:Number,
         required:[true,'must have quntitiy']
     },
-    
+    exp:Date,
     ingradient:{
         type:mongoose.Schema.ObjectId,
         ref:'Ingradient',
@@ -47,11 +47,14 @@ const invoiceSchema = new mongoose.Schema({
 invoiceSchema.pre('save', async function(next){
 
    const ing =  await Ingredient.findById(this.ingradient)
+   ing.expiryDate=this.exp
    ing.stock+=this.quantity
+   //this.exp=undefined
    await ing.save();
    console.log("Working")
    next();
 })
+
 invoiceSchema.pre(/^find/,function(next){
     this.find().populate({
         path:'ingradient'

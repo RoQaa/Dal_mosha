@@ -37,11 +37,7 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default:true
       },
-      inventory:{
-        type:mongoose.Schema.ObjectId,
-        ref:"Inventory",
-        required:"must have In Inventory"
-    },
+    
       passwordChangedAt: Date,
 
 },
