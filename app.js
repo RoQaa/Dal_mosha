@@ -27,8 +27,22 @@ const app = express();
 app.use(helmet()); // set el htttp headers property
 
 
+<<<<<<< HEAD
 app.use(cors());
 app.options('*', cors())
+=======
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+});
+
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  optionsSuccessStatus: 200 // For legacy browser support
+};
+app.use(cors(corsOptions));
+app.options('*',cors(corsOptions))
+>>>>>>> 8110388aba5046c400af7f227a1eb0f82a8d609a
 // Poclicy for blocking images
 app.use((req, res, next) => {
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
@@ -37,12 +51,22 @@ app.use((req, res, next) => {
 
 //development logging
 if (process.env.NODE_ENV === 'development') {
+<<<<<<< HEAD
     app.use(morgan('dev'));
     /*
    morganBody(app, {
      logAllReqHeader: true,
    });
    */
+=======
+   app.use(morgan('dev'));
+   /*
+  morganBody(app, {
+    logAllReqHeader: true,
+  });
+  */
+  
+>>>>>>> 8110388aba5046c400af7f227a1eb0f82a8d609a
 }
 
 //Limit requests from same API

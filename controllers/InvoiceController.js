@@ -1,6 +1,7 @@
 const multer = require('multer')
 const sharp = require('sharp');
 const fs =require('fs')
+const mongoose=require('mongoose')
 const Invoice=require('../models/invoiceModel')
 const AppError=require('../utils/appError')
 const {catchAsync}=require('../utils/catchAsync')
@@ -23,9 +24,15 @@ const upload = multer({
 exports.uploadInvoicePhoto = upload.single('backgroundImage');
 
 exports.resizeInvoicePhoto = catchAsync(async (req, res, next) => {
+  
     if (!req.file) return next();
-
-    req.file.filename = `Invoice-${req.params.id}-${Date.now()}.jpeg`;
+    let id 
+    if(req.body.id){ id=req.body.id;}
+    
+    else{
+        id=new mongoose.Types.ObjectId();
+    }
+    req.file.filename = `Invoice-${id}-${Date.now()}.jpeg`;
 
     await sharp(req.file.buffer)
         .resize(1300, 800)
@@ -38,31 +45,18 @@ exports.resizeInvoicePhoto = catchAsync(async (req, res, next) => {
 
 //PuT
 exports.createInvoice=catchAsync(async(req,res,next)=>{
+
+    const doc = await Invoice.findOneAndUpdate(
+        { _id: req.body.invoiceId || new mongoose.Types.ObjectId() },
+        req.body,
+        { new: true, upsert: true, runValidators: true }
+    );
+
     
     
-    let doc;
-    if(!req.body.code){
-        doc = new Invoice(req.body);
-      const id = doc._id.toString();
-
-      if (req.file) {
-        
-        req.file.filename = `Ingredient-${id}-${Date.now()}.jpeg`;
-        
-        await sharp(req.file.buffer)
-          .resize(500, 500)
-          .toFormat('jpeg')
-          .jpeg({ quality: 90 })
-          .toFile(`public\\img\\Invoice\\${req.file.filename}`);
-        doc.backgroundImage = `public\\img\\Invoice\\${req.file.filename}`;
-      }
-
-      await doc.save();
     
-    }
-    doc=await Invoice.findByIdAndUpdate(req.body.id,req.body,{new:true,runValidators:true})
-
-    res.status(201).json({
+    
+    res.status(200).json({
       status: true,
       message: "Invoice Created Successfully",
       data:doc

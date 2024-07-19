@@ -51,7 +51,7 @@ invoiceSchema.pre('save', async function(next){
    ing.stock+=this.quantity
    //this.exp=undefined
    await ing.save();
-   console.log("Working")
+
    next();
 })
 
