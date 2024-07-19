@@ -16,7 +16,7 @@ const ingradientSchema = new mongoose.Schema({
     },
     expiryDate:{
         type:Date,
-       required:[true,"must have expiry date"]
+     //  required:[true,"must have expiry date"]
     },
     unit:{
         type:mongoose.Schema.ObjectId,
@@ -30,7 +30,7 @@ const ingradientSchema = new mongoose.Schema({
     },
     backgroundImage:{
         type:String,
-        required:[true,"image required"]
+        required:[true,"backgroundImage required"]
     },
     
 

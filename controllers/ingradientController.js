@@ -37,39 +37,29 @@ exports.resizeIngradientPhoto = catchAsync(async (req, res, next) => {
 
 //TODO:test files in ingredients
 exports.createIngradient=catchAsync(async(req,res,next)=>{
-    console.log(req.body)
-    const ingredients = req.body; // Expecting an array of ingredients
-    if (!Array.isArray(ingredients) || ingredients.length === 0) {
-      return next(new AppError(`No ingredients provided`, 400));
-    }
+    const doc = new Ingradient(req.body);
+    const id = doc._id.toString();
 
-    const createdIngredients = [];
-    
-    for (const ingredientData of ingredients) {
-      const doc = new Ingradient(ingredientData);
-      const id = doc._id.toString();
-
+    if (!doc) {
+        return next(new AppError(`SomeThing Error cannot sign up`, 404));
+      }
       if (req.file) {
-        
-        req.file.filename = `Ingredient-${id}-${Date.now()}.jpeg`;
-        
+        req.file.filename = `Ingradient-${id}-${Date.now()}.jpeg`;
+    
         await sharp(req.file.buffer)
           .resize(500, 500)
           .toFormat('jpeg')
           .jpeg({ quality: 90 })
-          .toFile(`public\\img\\Ingredients\\${req.file.filename}`);
-        doc.backgroundImage = `public\\img\\Ingredients\\${req.file.filename}`;
+          .toFile(`public\\img\\Ingradients\\${req.file.filename}`);
+        doc.backgroundImage = `public\\img\\Ingradients\\${req.file.filename}`;
       }
 
       await doc.save();
-      createdIngredients.push(doc);
-    }
-
-    res.status(201).json({
-      status: true,
-      message: "Ingredients Created Successfully",
-      data: createdIngredients
-    });
+      res.status(201).json({
+        status:true,
+        message:"Ingradient created Successfully",
+        data:doc
+      })
       })
 
 exports.getIngradients=catchAsync(async(req,res,next)=>{

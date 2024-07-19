@@ -1,4 +1,5 @@
 const mongoose=require('mongoose');
+const AppError = require(`${__dirname}/../utils/appError`);
 const Ingredient=require('./ingradientModel')
 const invoiceSchema = new mongoose.Schema({
     supplier:{
@@ -44,21 +45,29 @@ const invoiceSchema = new mongoose.Schema({
     },
    
 })
-invoiceSchema.pre('save', async function(next){
 
-   const ing =  await Ingredient.findById(this.ingradient)
-   ing.expiryDate=this.exp
-   ing.stock+=this.quantity
-   //this.exp=undefined
-   await ing.save();
+// Pre-save hook
+invoiceSchema.pre('findOneAndUpdate', async function(next) {
+  const invoice = this;
 
-   next();
-})
+  try {
+    const ingredient = await Ingredient.findById(invoice.ingradient);
+    if (ingredient) {
+      ingredient.expiryDate = invoice.exp;
+      ingredient.stock = (ingredient.stock || 0) + invoice.quantity; // Sum stock
+      await ingredient.save();
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 invoiceSchema.pre(/^find/,function(next){
     this.find().populate({
         path:'ingradient'
     })
+    next();
 })
 
 
