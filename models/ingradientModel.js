@@ -31,7 +31,8 @@ const ingradientSchema = new mongoose.Schema({
     backgroundImage:{
         type:String,
         required:[true,"image required"]
-    }
+    },
+    
 
 })
 

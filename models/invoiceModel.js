@@ -1,5 +1,5 @@
 const mongoose=require('mongoose');
-
+const Ingredient=require('./ingradientModel')
 const invoiceSchema = new mongoose.Schema({
     supplier:{
         type:mongoose.Schema.ObjectId,
@@ -28,15 +28,34 @@ const invoiceSchema = new mongoose.Schema({
     comment:{
         type:String
     },
-    quantity:Number,
-    price:Number,
+    price:{
+        type:Number,
+        required:[true,'must have price']
+    },
+    quantity:{
+        type:Number,
+        required:[true,'must have quntitiy']
+    },
     
     ingradient:{
         type:mongoose.Schema.ObjectId,
         ref:'Ingradient',
         required:[true,'ingredient required']
     },
-    expiryDate:Date
+   
+})
+invoiceSchema.pre('save', async function(next){
+
+   const ing =  await Ingredient.findById(this.ingradient)
+   ing.stock+=this.quantity
+   await ing.save();
+   console.log("Working")
+   next();
+})
+invoiceSchema.pre(/^find/,function(next){
+    this.find().populate({
+        path:'ingradient'
+    })
 })
 
 

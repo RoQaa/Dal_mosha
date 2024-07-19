@@ -67,7 +67,7 @@ exports.createCategory=catchAsync(async(req,res,next)=>{
     
 })
 exports.getCategorys=catchAsync(async(req,res,next)=>{
-    const Categorys=await Category.find();
+    let  Categorys=await Category.find();
     if(!Categorys||Categorys.length==0) return next(new AppError(`no data`,404))
         res.status(200).json({
             status:true,

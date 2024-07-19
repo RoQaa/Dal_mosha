@@ -37,6 +37,7 @@ exports.resizeInvoicePhoto = catchAsync(async (req, res, next) => {
 });
 
 exports.createInvoice=catchAsync(async(req,res,next)=>{
+    
     console.log(req.body)
     const invoice = req.body; // Expecting an array of Invoice
     if (!Array.isArray(invoice) || invoice.length === 0) {
@@ -46,6 +47,7 @@ exports.createInvoice=catchAsync(async(req,res,next)=>{
     const createdInvoice = [];
     
     for (const ingredientData of invoice) {
+
       const doc = new Invoice(ingredientData);
       const id = doc._id.toString();
 
@@ -70,6 +72,7 @@ exports.createInvoice=catchAsync(async(req,res,next)=>{
       message: "Invoice Created Successfully",
       data: createdInvoice
     });
+    
       })
 
 
