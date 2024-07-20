@@ -7,8 +7,7 @@ const router = express.Router();
 router.use(authController.protect)
 router.put('/createinvoiceDepartment',invoiceController.createInvoice),
 router.get('/getinvoiceDepartment',invoiceController.getInvoices)
-//router.patch('/updateinvoice/:id',invoiceController.uploadInvoicePhoto,invoiceController.resizeInvoicePhoto,invoiceController.updateInvoice)
-router.delete('/deleteinvoice/:id',invoiceController.deleteInvoice)
+router.delete('/deleteinvoiceDepartment/:id',invoiceController.deleteInvoice)
 router.get('/search/:term',invoiceController.searchInvoice)
 router.post('/searchByDate',invoiceController.searchInvoiceByDate)
 

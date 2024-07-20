@@ -53,14 +53,14 @@ price:{
 
 
 
-invoiceSchema.pre(/^find/,function(next){
+invoiceDepartmentSchema.pre(/^find/,function(next){
     this.find().populate({
         path:'ingradient'
     })
     next();
 })
  // Pre-save hook
-invoiceSchema.pre('findOneAndUpdate', async function(next) {
+ invoiceDepartmentSchema.pre('findOneAndUpdate', async function(next) {
     
     const invoice = this._update;
       if(invoice.status!=='fullfilled') return next();
