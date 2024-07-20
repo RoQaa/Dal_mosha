@@ -1,6 +1,6 @@
 const mongoose=require('mongoose');
 const AppError = require(`${__dirname}/../utils/appError`);
-const Ingredient=require('./ingradientModel')
+const SubCategory=require('./subCategoryModel')
 const invoiceSchema = new mongoose.Schema({
     supplier:{
         type:mongoose.Schema.ObjectId,
@@ -39,10 +39,10 @@ const invoiceSchema = new mongoose.Schema({
     },
 
     exp:Date,
-    ingradient:{
+    subCategory:{
         type:mongoose.Schema.ObjectId,
-        ref:'Ingradient',
-        required:[true,'ingredient required']
+        ref:'subCategory',
+        required:[true,'subCategory required']
     },
     status:{
         type:String,
@@ -71,21 +71,21 @@ invoiceSchema.pre('findOneAndUpdate', async function(next) {
   const invoice = this._update;
     if(invoice.status!=='fullfilled') return next();
   
-    const ingredient = await Ingredient.findById(invoice.ingradient);
+    const subCategory = await SubCategory.findById(invoice.subCategory);
         
-        if (ingredient) {
+        if (subCategory) {
             if(invoice.kind==='وارد'){
-                ingredient.expiryDate = invoice.exp;
-                ingredient.stock = Number(ingredient.stock || 0) + Number(invoice.quantity); // Sum stock
+                subCategory.expiryDate = invoice.exp;
+                subCategory.stock = Number(subCategory.stock || 0) + Number(invoice.quantity); // Sum stock
             }
             if(invoice.kind==='هالك'){
-                ingredient.expiryDate = invoice.exp;
-                ingredient.stock = Number(ingredient.stock || 0) - Number(invoice.quantity); // Sum stock
+                subCategory.expiryDate = invoice.exp;
+                subCategory.stock = Number(subCategory.stock || 0) - Number(invoice.quantity); // Sum stock
             }
-        if(ingredient.stock<0)  ingredient.stock=0
+        if(subCategory.stock<0)  subCategory.stock=0
     }
   
-      await ingredient.save();
+      await subCategory.save();
     next();
 });
 
@@ -93,7 +93,7 @@ invoiceSchema.pre('findOneAndUpdate', async function(next) {
 
 invoiceSchema.pre(/^find/,function(next){
     this.find().populate({
-        path:'ingradient'
+        path:'subCategory'
     })
     next();
 })

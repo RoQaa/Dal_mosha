@@ -1,6 +1,6 @@
 const mongoose=require('mongoose');
 const { v4: uuidv4 } = require('uuid');
-const Ingredient=require('./ingradientModel');
+const SubCategory=require('./subCategoryModel');
 const AppError = require('../utils/appError');
 
 const invoiceDepartmentSchema = new mongoose.Schema({
@@ -15,10 +15,10 @@ const invoiceDepartmentSchema = new mongoose.Schema({
   },
   comment:String,
 
-  ingradient:{
+  subCategory:{
         type:mongoose.Schema.ObjectId,
-        ref:'Ingradient',
-        required:[true,'ingredient required']
+        ref:'subCategory',
+        required:[true,'subcategory required']
     },
   quantity:{
     type:Number,
@@ -50,7 +50,7 @@ price:{
 
 invoiceDepartmentSchema.pre(/^find/,function(next){
     this.find().populate({
-        path:'ingradient'
+        path:'subCategory'
     })
     next();
 })
@@ -61,21 +61,21 @@ invoiceDepartmentSchema.pre(/^find/,function(next){
     
       if(invoice.status!=='fullfilled') return next();
       
-      const ingredient = await Ingredient.findById(invoice.ingradient);
-      if(!ingredient) return next(new AppError(`ingrediant not found`,400))
-          if (ingredient) {
+      const subcategory = await Subcategory.findById(invoice.subCategory);
+      if(!subcategory) return next(new AppError(`ingrediant not found`,400))
+          if (subcategory) {
               if(invoice.kind==='صرف'){
                   
-                  ingredient.stock = Number(ingredient.stock || 0) - Number(invoice.quantity); // Sum stock
+                  subcategory.stock = Number(subcategory.stock || 0) - Number(invoice.quantity); // Sum stock
               }
               if(invoice.kind==='مرتجع'){
                  
-                  ingredient.stock = Number(ingredient.stock || 0) + Number(invoice.quantity); // Sum stock
+                  subcategory.stock = Number(subcategory.stock || 0) + Number(invoice.quantity); // Sum stock
               }
-          if(ingredient.stock<0)  ingredient.stock=0
+          if(subcategory.stock<0)  subcategory.stock=0
       }
     
-        await ingredient.save();
+        await subcategory.save();
       next();
   });
   

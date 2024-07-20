@@ -1,6 +1,6 @@
 const mongoose=require('mongoose')
 
-const ingradientSchema = new mongoose.Schema({
+const subCategorySchema = new mongoose.Schema({
     name:{
         type:String,
         required:[true,"must have name"],
@@ -38,9 +38,10 @@ const ingradientSchema = new mongoose.Schema({
         required:[true,"backgroundImage required"]
     },
     
+    
 
 })
 
-const Ingradient= mongoose.model('Ingradient',ingradientSchema);
+const subCategory= mongoose.model('subCategory',subCategorySchema);
 
-module.exports=Ingradient;
+module.exports=subCategory;
