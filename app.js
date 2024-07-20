@@ -104,6 +104,7 @@ app.use('/api/v1/ingradient', ingradientRouter)
 app.use('/api/v1/invoice', invoiceRouter)
 app.use('/api/v1/selling-points', sellingPointRouter)
 app.use('/api/v1/payment-method', paymentMethodRouter)
+app.use('/api/v1/client-types', clientTypeRouter)
 app.all('*', (req, res, next) => {
 
     return next(
