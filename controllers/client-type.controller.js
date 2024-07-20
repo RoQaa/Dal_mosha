@@ -29,12 +29,12 @@ exports.getClientType = catchAsync(async (req, res, next) => {
 
 exports.getAllClientTypes = catchAsync(async (req, res, next) => {
 
-    const {name} = req.query;
+    const {type} = req.query;
 
 
     let filter = {};
-    if (name) {
-        filter.name = {$regex: name, $options: 'i'};
+    if (type) {
+        filter.type = {$regex: type, $options: 'i'};
     }
 
     const allClientTypes = await ClientType.find(filter);
