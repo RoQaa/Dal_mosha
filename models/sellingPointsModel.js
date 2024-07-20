@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const sellingPointsSchema = new mongoose.Schema({
+const placesSchema = new mongoose.Schema({
     name: {
         type: String,
         unique: [true, 'من فضلك ادخل اسم نقطه البيع'],
