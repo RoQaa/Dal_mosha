@@ -1,7 +1,7 @@
 const express = require('express');
 const authController = require('../controllers/authController')
-const SellingPointController = require('../controllers/placessController')
-const {uploadSellingPointPhoto} = require("../controllers/placessController");
+const SellingPointController = require('../controllers/placesController')
+const {uploadSellingPointPhoto} = require("../controllers/placesController");
 const {resizeCategoryPhoto} = require("../controllers/categoryController");
 
 const router = express.Router();
