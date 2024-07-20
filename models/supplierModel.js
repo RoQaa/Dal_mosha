@@ -19,7 +19,10 @@ const supplierSchema = new mongoose.Schema({
       address:{
         type:String,
         required:[true,"address required"],
-      }
+      },
+  
+
+      
 })
 
 

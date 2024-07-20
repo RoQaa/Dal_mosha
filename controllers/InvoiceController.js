@@ -3,7 +3,6 @@ const sharp = require('sharp');
 const fs = require('fs')
 const mongoose = require('mongoose')
 const Invoice = require('../models/invoiceModel')
-const Ingredient=require('../models/ingradientModel')
 const AppError = require('../utils/appError')
 const { catchAsync } = require('../utils/catchAsync')
 
@@ -126,6 +125,7 @@ exports.searchInvoice = catchAsync(async (req, res, next) => {
         {
             code: { $regex: req.params.term, $options: "i" },
             price: { $regex: req.params.term, $options: "i" },
+          //  status:{$regex: req.params.term, $options: "i"}
         }
 
 
@@ -137,10 +137,11 @@ exports.searchInvoice = catchAsync(async (req, res, next) => {
     })
 })
 
-exports.searchInvoiceByDate=catchAsync(async(req,res,next)=>{
+exports.searchInvoiceByDate=catchAsync(async(req,res,next)=>{ //done
   const {startDate,endDate }=req.body;
+ 
   const data = await Invoice.find({
-    dateField: {
+    invoiceDate: {
       $gte: startDate,
       $lte: endDate
     }
@@ -152,3 +153,20 @@ exports.searchInvoiceByDate=catchAsync(async(req,res,next)=>{
 
 })
 })
+exports.searchInvoiceByStatus=catchAsync(async(req,res,next)=>{ //done
+    
+   
+    const data = await Invoice.find({
+      status:req.body.status
+      
+      
+    });
+    if(!data) return next(new AppError(`No data found`,404))
+      res.status(200).json({
+      status:true,
+      data
+  
+  })
+})
+
+

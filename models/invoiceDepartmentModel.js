@@ -1,55 +1,50 @@
 const mongoose=require('mongoose');
-const AppError = require(`${__dirname}/../utils/appError`);
-const Ingredient=require('./ingradientModel')
+const { v4: uuidv4 } = require('uuid');
+const Ingredient=require('./ingradientModel');
+
 const invoiceDepartmentSchema = new mongoose.Schema({
-    supplier:{
-        type:mongoose.Schema.ObjectId,
-        ref:'Supplier',
-        required:[true,'supplier required']
-    },
-    invoiceDate:{
-        type:Date,
-        default:Date.now(),
-        required:[true,'invoice date required']
-    },
-    code:{
+  repo:{
+    type:mongoose.Schema.ObjectId,
+    ref:"Repo",
+    required:[true,'must have Repo']
+  },
+  invoiceDepartmentDate:{
+    type:Date,
+    required:[true,"must have Date"]
+  },
+  comment:String,
+  Ingredient:{
+    type:mongoose.Schema.ObjectId,
+    ref:'Ingredient',
+    required:[true,'must have ingerdient']
+  },
+  quantity:{
+    type:Number,
+    required:[true,"must have quantity"]
+  },
+  unit:{
+    type:mongoose.Schema.ObjectId,
+    ref:'Unit',
+    required:[true,"must have Unit"]
+  },
+  status:{
+    type:String,
+    enum:['rejected','fullfilled','pending'],
+    default:'pending'
+},
+price:{
+    type:Number,
+    required:[true,'must have price']
+},
+    kind:{
         type:String,
-        required:[true,'code required']
-    },
-    backgroundImage:{
-        type:String,
-        required:[true,'must have backgroundImage']
-    },
-    discount:{
-        type:Number
-    },
-    tax:{
-        type:Number
-    },
-    comment:{
-        type:String
-    },
-    price:{
-        type:Number,
-        required:[true,'must have price']
-    },
-    quantity:{
-        type:Number,
-        required:[true,'must have quntitiy']
+        required:[true,'must have type'],
+        enum:['مرتجع','صرف']
     },
 
-    exp:Date,
-    ingradient:{
-        type:mongoose.Schema.ObjectId,
-        ref:'Ingradient',
-        required:[true,'ingredient required']
-    },
-    status:{
-        type:String,
-        enum:['rejected','fullfilled','pending'],
-        default:'pending'
-    },
- 
+
+    serialNumber: { type: String, unique: true, default: uuidv4 },
+
    
 },{
   toJSON:{virtuals:true},
@@ -64,8 +59,30 @@ invoiceSchema.pre(/^find/,function(next){
     })
     next();
 })
-
+ // Pre-save hook
+invoiceSchema.pre('findOneAndUpdate', async function(next) {
+    
+    const invoice = this._update;
+      if(invoice.status!=='fullfilled') return next();
+    
+      const ingredient = await Ingredient.findById(invoice.ingradient);
+          
+          if (ingredient) {
+              if(invoice.kind==='صرف'){
+                  ingredient.expiryDate = invoice.exp;
+                  ingredient.stock = Number(ingredient.stock || 0) - Number(invoice.quantity); // Sum stock
+              }
+              if(invoice.kind==='مرتجع'){
+                  ingredient.expiryDate = invoice.exp;
+                  ingredient.stock = Number(ingredient.stock || 0) + Number(invoice.quantity); // Sum stock
+              }
+          if(ingredient.stock<0)  ingredient.stock=0
+      }
+    
+        await ingredient.save();
+      next();
+  });
+  
 
 const invoiceDepartment=mongoose.model('invoiceDepartment',invoiceDepartmentSchema)
 module.exports=invoiceDepartment;
-//TODO: Status تم  مراجعة والقبول 

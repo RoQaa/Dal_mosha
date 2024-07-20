@@ -49,6 +49,11 @@ const invoiceSchema = new mongoose.Schema({
         enum:['rejected','fullfilled','pending'],
         default:'pending'
     },
+    kind:{
+        type:String,
+        required:[true,'kind required'],
+        enum:['هالك','وارد']
+    }
  
    
 },{
@@ -67,11 +72,19 @@ invoiceSchema.pre('findOneAndUpdate', async function(next) {
     if(invoice.status!=='fullfilled') return next();
   
     const ingredient = await Ingredient.findById(invoice.ingradient);
-    
-    if (ingredient) {
-        ingredient.expiryDate = invoice.exp;
-        ingredient.stock = Number(ingredient.stock || 0) + Number(invoice.quantity); // Sum stock
+        
+        if (ingredient) {
+            if(invoice.kind==='وارد'){
+                ingredient.expiryDate = invoice.exp;
+                ingredient.stock = Number(ingredient.stock || 0) + Number(invoice.quantity); // Sum stock
+            }
+            if(invoice.kind==='هالك'){
+                ingredient.expiryDate = invoice.exp;
+                ingredient.stock = Number(ingredient.stock || 0) - Number(invoice.quantity); // Sum stock
+            }
+        if(ingredient.stock<0)  ingredient.stock=0
     }
+  
       await ingredient.save();
     next();
 });
