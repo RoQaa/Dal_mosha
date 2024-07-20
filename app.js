@@ -52,12 +52,12 @@ app.use((req, res, next) => {
 
 //development logging
 if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
-    /*
+ //   app.use(morgan('dev'));
+    
    morganBody(app, {
      logAllReqHeader: true,
    });
-   */
+   
 
 }
 
@@ -118,4 +118,5 @@ app.all('*', (req, res, next) => {
 app.use(globalErrorHandler);
 
 module.exports = app;
+
 //TODO:Pagination imprtant

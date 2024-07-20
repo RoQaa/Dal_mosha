@@ -1,6 +1,7 @@
 const mongoose=require('mongoose');
 const { v4: uuidv4 } = require('uuid');
 const Ingredient=require('./ingradientModel');
+const AppError = require('../utils/appError');
 
 const invoiceDepartmentSchema = new mongoose.Schema({
   repo:{
@@ -13,20 +14,17 @@ const invoiceDepartmentSchema = new mongoose.Schema({
     required:[true,"must have Date"]
   },
   comment:String,
-  Ingredient:{
-    type:mongoose.Schema.ObjectId,
-    ref:'Ingredient',
-    required:[true,'must have ingerdient']
-  },
+
+  ingradient:{
+        type:mongoose.Schema.ObjectId,
+        ref:'Ingradient',
+        required:[true,'ingredient required']
+    },
   quantity:{
     type:Number,
     required:[true,"must have quantity"]
   },
-  unit:{
-    type:mongoose.Schema.ObjectId,
-    ref:'Unit',
-    required:[true,"must have Unit"]
-  },
+
   status:{
     type:String,
     enum:['rejected','fullfilled','pending'],
@@ -46,9 +44,6 @@ price:{
     serialNumber: { type: String, unique: true, default: uuidv4 },
 
    
-},{
-  toJSON:{virtuals:true},
-  toObject:{virtuals:true}
 })
 
 
@@ -63,17 +58,18 @@ invoiceDepartmentSchema.pre(/^find/,function(next){
  invoiceDepartmentSchema.pre('findOneAndUpdate', async function(next) {
     
     const invoice = this._update;
-      if(invoice.status!=='fullfilled') return next();
     
+      if(invoice.status!=='fullfilled') return next();
+      
       const ingredient = await Ingredient.findById(invoice.ingradient);
-          
+      if(!ingredient) return next(new AppError(`ingrediant not found`,400))
           if (ingredient) {
               if(invoice.kind==='صرف'){
-                  ingredient.expiryDate = invoice.exp;
+                  
                   ingredient.stock = Number(ingredient.stock || 0) - Number(invoice.quantity); // Sum stock
               }
               if(invoice.kind==='مرتجع'){
-                  ingredient.expiryDate = invoice.exp;
+                 
                   ingredient.stock = Number(ingredient.stock || 0) + Number(invoice.quantity); // Sum stock
               }
           if(ingredient.stock<0)  ingredient.stock=0
