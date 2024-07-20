@@ -8,7 +8,12 @@ const ingradientSchema = new mongoose.Schema({
     },
     stock:{
         type:Number,
-        required:[true,"must have stock"]
+        default:0
+       // required:[true,"must have stock"]
+    },
+    safeQuantity:{
+        type:Number,
+        required:[true,"must have safeQuantity"]
     },
     daysAlert:{
         type:Number,

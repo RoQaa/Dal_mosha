@@ -1,7 +1,7 @@
 const mongoose=require('mongoose');
 const AppError = require(`${__dirname}/../utils/appError`);
 const Ingredient=require('./ingradientModel')
-const invoiceSchema = new mongoose.Schema({
+const invoiceDepartmentSchema = new mongoose.Schema({
     supplier:{
         type:mongoose.Schema.ObjectId,
         ref:'Supplier',
@@ -55,26 +55,6 @@ const invoiceSchema = new mongoose.Schema({
   toJSON:{virtuals:true},
   toObject:{virtuals:true}
 })
-invoiceSchema.virtual('totalPrice').get(function(){
-  return (this.price*this.quantity)+this.tax-this.discount;
-}); 
-
-
-// Pre-save hook
-invoiceSchema.pre('findOneAndUpdate', async function(next) {
-    
-  const invoice = this._update;
-    if(invoice.status!=='fullfilled') return next();
-  
-    const ingredient = await Ingredient.findById(invoice.ingradient);
-    
-    if (ingredient) {
-        ingredient.expiryDate = invoice.exp;
-        ingredient.stock = Number(ingredient.stock || 0) + Number(invoice.quantity); // Sum stock
-    }
-      await ingredient.save();
-    next();
-});
 
 
 
@@ -86,6 +66,6 @@ invoiceSchema.pre(/^find/,function(next){
 })
 
 
-const Invoice=mongoose.model('Invoice',invoiceSchema)
-module.exports=Invoice;
+const invoiceDepartment=mongoose.model('invoiceDepartment',invoiceDepartmentSchema)
+module.exports=invoiceDepartment;
 //TODO: Status تم  مراجعة والقبول 

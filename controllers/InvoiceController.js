@@ -71,7 +71,7 @@ exports.getInvoices = catchAsync(async (req, res, next) => {
 })
 
 
-
+/*
 exports.updateInvoice = catchAsync(async (req, res, next) => {
 
 
@@ -100,7 +100,7 @@ exports.updateInvoice = catchAsync(async (req, res, next) => {
 
     }
 })
-
+*/
 exports.deleteInvoice = catchAsync(async (req, res, next) => {
     const cat = await Invoice.findById(req.params.id)
     if (!cat) return next(new AppError(`Invoice not found`, 404))
@@ -135,4 +135,20 @@ exports.searchInvoice = catchAsync(async (req, res, next) => {
         status: true,
         data: doc
     })
+})
+
+exports.searchInvoiceByDate=catchAsync(async(req,res,next)=>{
+  const {startDate,endDate }=req.body;
+  const data = await Invoice.find({
+    dateField: {
+      $gte: startDate,
+      $lte: endDate
+    }
+  });
+  if(!data) return next(new AppError(`No data found`,404))
+    res.status(200).json({
+    status:true,
+    data
+
+})
 })
