@@ -1,6 +1,6 @@
 const express = require('express');
 const authController = require('../controllers/authController')
-const PaymentMethodController = require('../controllers/payment-method.controller')
+const PaymentMethodController = require('../controllers/paymentMethodController')
 
 const router = express.Router();
 //TODO:admin permissions
