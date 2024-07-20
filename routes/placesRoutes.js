@@ -9,11 +9,11 @@ const router = express.Router();
 
 router.use(authController.protect)
 
-router.post('/add', uploadSellingPointPhoto, SellingPointController.addSellingPoint);
-router.get('/:id', SellingPointController.getSellingPoint)
-router.get('', SellingPointController.getAllSellingPoints)
-router.put('/:id', uploadSellingPointPhoto, resizeCategoryPhoto, SellingPointController.updateSellingPoint)
-router.delete('/:id', SellingPointController.deleteSellingPoint)
+router.post('/add', uploadSellingPointPhoto, SellingPointController.addPlace);
+router.get('/:id', SellingPointController.getPlace)
+router.get('', SellingPointController.getAllPlaces)
+router.put('/:id', uploadSellingPointPhoto, resizeCategoryPhoto, SellingPointController.updatePlace)
+router.delete('/:id', SellingPointController.deletePlace)
 
 module.exports = router;
 
