@@ -30,7 +30,7 @@ const placesSchema = new mongoose.Schema({
 
 })
 
-const SellingPoints = mongoose.model('SellingPoints', sellingPointsSchema)
-module.exports = SellingPoints
+const Place = mongoose.model('Place', placesSchema)
+module.exports = Place
 
 
