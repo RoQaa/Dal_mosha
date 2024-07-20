@@ -1,6 +1,6 @@
 const express = require('express');
 const authController = require('../controllers/authController')
-const ClientTypeController = require('../controllers/client-type.controller')
+const ClientTypeController = require('../controllers/clientTypeController')
 
 const router = express.Router();
 //TODO:admin permissions

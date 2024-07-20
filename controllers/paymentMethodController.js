@@ -1,4 +1,4 @@
-const PaymentMethod = require('../models/payment-method.model');
+const PaymentMethod = require('../models/paymentMethodsModel');
 const AppError = require('../utils/appError');
 const {catchAsync} = require('../utils/catchAsync');
 

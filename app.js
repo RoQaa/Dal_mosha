@@ -14,9 +14,9 @@ const categoryRouter = require('./routes/categoryRouter')
 const unitRouter = require('./routes/unitRouter')
 const ingradientRouter = require('./routes/ingradientRouter');
 const invoiceRouter = require('./routes/invoiceRouter');
-const sellingPointRouter = require('./routes/selling-points.route')
-const paymentMethodRouter = require('./routes/payment-method.route')
-const clientTypeRouter = require('./routes/client-type.route')
+const sellingPointRouter = require('./routes/sellingPointsRoutes')
+const paymentMethodRouter = require('./routes/paymentMethodsRoute')
+const clientTypeRouter = require('./routes/clientTypesRoutes')
 const AppError = require(`${__dirname}/utils/appError`);
 
 const globalErrorHandler = require(`${__dirname}/controllers/errorController`);
