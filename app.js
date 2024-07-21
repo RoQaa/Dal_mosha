@@ -14,11 +14,11 @@ const categoryRouter = require('./routes/categoryRouter')
 const unitRouter = require('./routes/unitRouter')
 const subCategoryRouter = require('./routes/subCategoryRouter');
 const invoiceRouter = require('./routes/invoiceRouter');
-const sellingPointRouter = require('./routes/sellingPointsRoutes')
+const sellingPointRouter = require('./routes/placesRoutes')
 const paymentMethodRouter = require('./routes/paymentMethodsRoute')
 const clientTypeRouter = require('./routes/clientTypesRoutes')
-const clientRouter=require('./routes/clientRouter')
-const invoiceDepartmentRouter=require('./routes/invoiceDepartmentRouter')
+const clientRouter = require('./routes/clientRouter')
+const invoiceDepartmentRouter = require('./routes/invoiceDepartmentRouter')
 const AppError = require(`${__dirname}/utils/appError`);
 
 const globalErrorHandler = require(`${__dirname}/controllers/errorController`);
@@ -52,12 +52,12 @@ app.use((req, res, next) => {
 
 //development logging
 if (process.env.NODE_ENV === 'development') {
- //   app.use(morgan('dev'));
-    
-   morganBody(app, {
-     logAllReqHeader: true,
-   });
-   
+    //   app.use(morgan('dev'));
+
+    morganBody(app, {
+        logAllReqHeader: true,
+    });
+
 
 }
 
