@@ -95,6 +95,7 @@ exports.getAllProductSubCategory = catchAsync(async (req, res, next) => {
 
     const allProductCategories = await ProductCategory.find(filter);
 
+
     return res.status(200).json({
         status: true,
         allProductCategories
@@ -118,7 +119,7 @@ exports.updateProductSubCategory = catchAsync(async (req, res, next) => {
         req.body.backgroundImage = path.join(dir, req.file.filename);
     }
 
-   
+
     Object.keys(req.body).forEach(key => {
         productCategory[key] = req.body[key];
     });

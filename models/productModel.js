@@ -36,7 +36,17 @@ const productSchema = new mongoose.Schema({
         required: true
     },
 
-    productIngredients: {}
+    productIngredients: [{
+        name: {
+            type: String,
+        },
+        quantity: {
+            type: Number,
+        },
+        unit: {
+            type: String,
+        }
+    }]
 })
 
 
