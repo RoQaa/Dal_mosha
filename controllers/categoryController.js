@@ -126,7 +126,7 @@ exports.searchCategory = catchAsync(async (req, res, next) => {
     const doc = await Category.find(
         {name: {$regex: req.params.term, $options: "i"}},
     ).limit(10);
-    if (!doc || doc.length == 0) return next(new AppError(`Category not found`, 404))
+    if (!doc || doc.length === 0) return next(new AppError(`Category not found`, 404))
     res.status(200).json({
         status: true,
         data: doc

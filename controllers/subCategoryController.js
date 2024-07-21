@@ -1,9 +1,10 @@
 const multer = require('multer')
 const sharp = require('sharp');
-const fs =require('fs')
-const subCategory =require('../models/subCategoryModel')
-const AppError=require('../utils/appError')
-const {catchAsync}=require('../utils/catchAsync')
+const fs = require('fs')
+const subCategory = require('../models/subCategoryModel')
+const AppError = require('../utils/appError')
+const {catchAsync} = require('../utils/catchAsync')
+
 const multerFilter = (req, file, cb) => {
 
     if (file.mimetype.startsWith('image')) {
@@ -29,7 +30,7 @@ exports.resizesubCategoryPhoto = catchAsync(async (req, res, next) => {
         .resize(1300, 800)
         .toFormat('jpeg')
         .jpeg({quality: 90})
-        .toFile(`public\\img\\subCategories\\${req.file.filename}`);
+        .toFile(`public\\img\\SubCategories\\${req.file.filename}`);
 
     next();
 });
@@ -50,8 +51,8 @@ exports.createsubCategory = catchAsync(async (req, res, next) => {
             .resize(500, 500)
             .toFormat('jpeg')
             .jpeg({quality: 90})
-            .toFile(`public\\img\\subCategories\\${req.file.filename}`);
-        doc.backgroundImage = `public\\img\\subCategories\\${req.file.filename}`;
+            .toFile(`public\\img\\SubCategories\\${req.file.filename}`);
+        doc.backgroundImage = `public\\img\\SubCategories\\${req.file.filename}`;
     }
 
     await doc.save();
@@ -62,47 +63,47 @@ exports.createsubCategory = catchAsync(async (req, res, next) => {
     })
 })
 
-exports.getsubCategorys=catchAsync(async(req,res,next)=>{
-    const subCategorys=await subCategory.find();
-    if(!subCategorys||subCategorys.length==0) return next(new AppError(`no data`,404))
-        res.status(200).json({
-            status:true,
-            subCategorys
+exports.getsubCategorys = catchAsync(async (req, res, next) => {
+    const subCategories = await subCategory.find();
+    if (!subCategories || subCategories.length === 0) return next(new AppError(`no data`, 404))
+    res.status(200).json({
+        status: true,
+        subCategories
     })
-            
-           /*
-    const data = await subCategory.aggregate([
-        {
-          $lookup: {
-            from: Category.collection.name,
-            localField: 'category',
-            foreignField: '_id',
-            as: 'category',
-            pipeline: [
-              {
-                $lookup: {
-                  from: Repo.collection.name,
-                  localField: 'repo',
-                  foreignField: '_id',
-                  as: 'repo',
-                  pipeline: [
-                    // Add additional stages here if needed
-                  ],
-                },
-              },
-              {
-                $unwind: '$repo', // Unwind if you expect a single repo per category
-              },
-            ],
-          },
-        },
-        {
-          $unwind: '$category', // Unwind if you expect a single category per subCategory
-        },
-      ]).exec();
-      res.status(200).json({
-        status:true,
-        data
+
+    /*
+const data = await subCategory.aggregate([
+ {
+   $lookup: {
+     from: Category.collection.name,
+     localField: 'category',
+     foreignField: '_id',
+     as: 'category',
+     pipeline: [
+       {
+         $lookup: {
+           from: Repo.collection.name,
+           localField: 'repo',
+           foreignField: '_id',
+           as: 'repo',
+           pipeline: [
+             // Add additional stages here if needed
+           ],
+         },
+       },
+       {
+         $unwind: '$repo', // Unwind if you expect a single repo per category
+       },
+     ],
+   },
+ },
+ {
+   $unwind: '$category', // Unwind if you expect a single category per subCategory
+ },
+]).exec();
+res.status(200).json({
+ status:true,
+ data
 })*/
 })
 
@@ -115,7 +116,7 @@ exports.updatesubCategory = catchAsync(async (req, res, next) => {
         return next(new AppError(`subCategory not found`, 404))
     }
     if (req.file) {
-        req.body.backgroundImage = `public\\img\\subCategories\\${req.file.filename}`;
+        req.body.backgroundImage = `public\\img\\SubCategories\\${req.file.filename}`;
         fs.unlink(`${cat.backgroundImage}`, (err) => {
             console.log("image deleted")
             if (err) {
@@ -160,7 +161,7 @@ exports.searchsubCategory = catchAsync(async (req, res, next) => {
     const doc = await subCategory.find(
         {name: {$regex: req.params.term, $options: "i"}},
     ).limit(10);
-    
+
     if (!doc || doc.length === 0) return next(new AppError(`subCategory not found`, 404))
     res.status(200).json({
         status: true,
