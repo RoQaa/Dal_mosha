@@ -1,24 +1,24 @@
-const mongoose=require('mongoose')
-const inventorySchema=new mongoose.Schema({
+const mongoose = require('mongoose')
+const inventorySchema = new mongoose.Schema({
 
-    name:{
-        type:String,
-        unique:[true,"must have a name"]
+    name: {
+        type: String,
+        unique: [true, "must have a name"]
     },
-    place:{
-        type:mongoose.Schema.ObjectId,
-        ref:'Place',
-        required:[true,"must have place"]
+    place: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Place',
+        required: [true, "must have place"]
     }
 })
 
-inventorySchema.pre(/^find/,function(next){
+inventorySchema.pre(/^find/, function (next) {
     this.populate({
-        path:'place'
+        path: 'place'
     })
     next();
 })
 
 
-const Inventory= mongoose.model('Inventory',inventorySchema)
-module.exports=Inventory
+const Inventory = mongoose.model('Inventory', inventorySchema)
+module.exports = Inventory
