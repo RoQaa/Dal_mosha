@@ -19,6 +19,7 @@ const paymentMethodRouter = require('./routes/paymentMethodsRoute')
 const clientTypeRouter = require('./routes/clientTypesRoutes')
 const clientRouter = require('./routes/clientRouter')
 const invoiceDepartmentRouter = require('./routes/invoiceDepartmentRouter')
+const productCategory = require('./routes/productCategoryRouter')
 const AppError = require(`${__dirname}/utils/appError`);
 
 const globalErrorHandler = require(`${__dirname}/controllers/errorController`);
@@ -89,7 +90,7 @@ app.use(xss());
 app.use('/api/public', express.static(path.join(__dirname, 'public')));
 
 //app.use(express.json({limit:'10kb'})); => limit of data in body not more than 10 KB
-// asdsfasdfsa
+
 //request time of API
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
@@ -109,6 +110,7 @@ app.use('/api/v1/selling-points', sellingPointRouter)
 app.use('/api/v1/payment-method', paymentMethodRouter)
 app.use('/api/v1/client-types', clientTypeRouter)
 app.use('/api/v1/clients', clientRouter)
+app.use('/api/v1/productCategory', productCategory)
 app.all('*', (req, res, next) => {
 
     return next(
