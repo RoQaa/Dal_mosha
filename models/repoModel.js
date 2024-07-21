@@ -3,7 +3,7 @@ const repoSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "name required"],
-        unique: [true, "name used before"]
+      
     },
     desc: {
         type: String,
@@ -22,6 +22,12 @@ const repoSchema = new mongoose.Schema({
 
 })
 
-
+repoSchema.pre(/^find/,function (next){
+    this.populate({
+        path:'inventory',
+        
+    })
+    next();
+})
 const Repo = mongoose.model('Repo', repoSchema)
 module.exports = Repo;

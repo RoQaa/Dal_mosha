@@ -4,7 +4,7 @@ const subCategorySchema = new mongoose.Schema({
     name:{
         type:String,
         required:[true,"must have name"],
-        unique:[true,"this name used before"]
+       
     },
     stock:{
         type:Number,
@@ -21,7 +21,7 @@ const subCategorySchema = new mongoose.Schema({
     },
     expiryDate:{
         type:Date,
-     //  required:[true,"must have expiry date"]
+       required:[true,"must have expiry date"]
     },
     unit:{
         type:mongoose.Schema.ObjectId,

@@ -3,7 +3,7 @@ const categorySchema = new mongoose.Schema({
     name:{
         type:String,
         required:[true,"name required"],
-        unique:[true,"name used before"]
+       
     },
         desc:{
             type:String,

@@ -1,6 +1,8 @@
 const multer = require('multer')
 const sharp = require('sharp');
 const fs =require('fs')
+const Category=require('../models/categoryModel')
+const Repo =require('../models/repoModel')
 const subCategory =require('../models/subCategoryModel')
 const AppError=require('../utils/appError')
 const {catchAsync}=require('../utils/catchAsync')
@@ -63,12 +65,48 @@ exports.createsubCategory=catchAsync(async(req,res,next)=>{
       })
 
 exports.getsubCategorys=catchAsync(async(req,res,next)=>{
+    
     const subCategorys=await subCategory.find();
     if(!subCategorys||subCategorys.length==0) return next(new AppError(`no data`,404))
         res.status(200).json({
             status:true,
             subCategorys
     })
+            
+           /*
+    const data = await subCategory.aggregate([
+        {
+          $lookup: {
+            from: Category.collection.name,
+            localField: 'category',
+            foreignField: '_id',
+            as: 'category',
+            pipeline: [
+              {
+                $lookup: {
+                  from: Repo.collection.name,
+                  localField: 'repo',
+                  foreignField: '_id',
+                  as: 'repo',
+                  pipeline: [
+                    // Add additional stages here if needed
+                  ],
+                },
+              },
+              {
+                $unwind: '$repo', // Unwind if you expect a single repo per category
+              },
+            ],
+          },
+        },
+        {
+          $unwind: '$category', // Unwind if you expect a single category per subCategory
+        },
+      ]).exec();
+      res.status(200).json({
+        status:true,
+        data
+})*/
 })
 
 
