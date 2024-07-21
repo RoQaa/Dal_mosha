@@ -46,7 +46,12 @@ const productSchema = new mongoose.Schema({
         unit: {
             type: String,
         }
-    }]
+    }],
+    place: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Place",
+        required: true
+    }
 })
 
 
