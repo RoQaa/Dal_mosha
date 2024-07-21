@@ -1,10 +1,11 @@
 const multer = require('multer');
 const sharp = require('sharp');
 const fs = require('fs');
-const ProductCategory = require('../models/productsCategoryModel');
+const Product = require('../models/productModel');
 const AppError = require('../utils/appError');
 const {catchAsync} = require('../utils/catchAsync');
 const path = require('path')
+
 
 // file upload - resize
 const multerFilter = (req, file, cb) => {
@@ -25,28 +26,29 @@ exports.uploadSellingPointPhoto = upload.single('backgroundImage');
 exports.resizeCategoryPhoto = catchAsync(async (req, res, next) => {
     if (!req.file) return next();
 
-    req.file.filename = `ProductCategory-${req.params.id}-${Date.now()}.jpeg`;
+    req.file.filename = `Product-${req.params.id}-${Date.now()}.jpeg`;
 
     await sharp(req.file.buffer)
         .resize(1300, 800)
         .toFormat('jpeg')
         .jpeg({quality: 90})
-        .toFile(`public\\img\\ProductCategory\\${req.file.filename}`);
+        .toFile(`public\\img\\Product\\${req.file.filename}`);
 
     next();
 });
 
 
 // Crud
-exports.addProductSubCategory = catchAsync(async (req, res, next) => {
-    const productCategory = await ProductCategory.create(req.body);
-    if (!productCategory) {
-        return next(new AppError('غير قادر على إضافة التصنيف الفرعي', 400));
+exports.addProduct = catchAsync(async (req, res, next) => {
+    const product = await Product.create(req.body);
+
+    if (!product) {
+        return next(new AppError('غير قادر على إضافة المنتج ', 400));
     }
 
     if (req.file) {
-        req.file.filename = `${productCategory.name}-${Date.now()}.jpeg`;
-        const dir = `public\\img\\ProductCategory`;
+        req.file.filename = `${product.name}-${Date.now()}.jpeg`;
+        const dir = `public\\img\\Product`;
 
         // Ensure the directory exists
         if (!fs.existsSync(dir)) {
@@ -60,30 +62,30 @@ exports.addProductSubCategory = catchAsync(async (req, res, next) => {
             .toFile(`${dir}\\${req.file.filename}`);
 
 
-        productCategory.backgroundImage = `${dir}\\${req.file.filename}`;
+        product.backgroundImage = `${dir}\\${req.file.filename}`;
     }
 
-    await productCategory.save();
+    await product.save();
 
     res.status(201).json({
         status: true,
-        message: "تم إنشاءالتصنيف الفرعي بنجاح",
-        productCategory
+        message: "تم إضافة المنتج بنجاح",
+        product
     });
 });
 
-exports.getProductSubCategory = catchAsync(async (req, res, next) => {
+exports.getProduct = catchAsync(async (req, res, next) => {
     const {id} = req.params;
 
-    const productCategory = await ProductCategory.findById(id);
+    const product = await Product.findById(id);
 
     return res.status(200).json({
         status: true,
-        productCategory
+        product
     })
 })
 
-exports.getAllProductSubCategory = catchAsync(async (req, res, next) => {
+exports.getAllProducts = catchAsync(async (req, res, next) => {
 
     const {name} = req.query;
 
@@ -93,23 +95,24 @@ exports.getAllProductSubCategory = catchAsync(async (req, res, next) => {
         filter.name = {$regex: name, $options: 'i'};
     }
 
-    const allProductCategories = await ProductCategory.find(filter);
+    const products = await Product.find(filter);
 
     return res.status(200).json({
         status: true,
-        allProductCategories
+        products
     });
 });
 
 
-exports.updateProductSubCategory = catchAsync(async (req, res, next) => {
-    const productCategory = await ProductCategory.findById(req.params.id);
-    if (!productCategory) {
-        return next(new AppError(`ProductCategory does not exist`, 404));
+exports.updateProduct = catchAsync(async (req, res, next) => {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+        return next(new AppError(`Product does not exist`, 404));
     }
 
     if (req.file) {
-        const dir = path.join('public', 'img', 'ProductCategory');
+        const dir = path.join('public', 'img', 'Product');
 
         // Ensure the directory exists
         if (!fs.existsSync(dir)) {
@@ -118,34 +121,34 @@ exports.updateProductSubCategory = catchAsync(async (req, res, next) => {
         req.body.backgroundImage = path.join(dir, req.file.filename);
     }
 
-   
+
     Object.keys(req.body).forEach(key => {
-        productCategory[key] = req.body[key];
+        product[key] = req.body[key];
     });
 
-    await productCategory.save({validateBeforeSave: false});
+    await product.save({validateBeforeSave: false});
 
     res.status(200).json({
         status: true,
-        message: `ProductCategory details have been updated successfully`,
-        productCategory
+        message: `Product details have been updated successfully`,
+        product
     });
 });
 
 
-exports.deleteProductSubCategory = catchAsync(async (req, res, next) => {
+exports.deleteProduct = catchAsync(async (req, res, next) => {
 
 
-    const productCategory = await ProductCategory.findByIdAndDelete(req.params.id);
+    const product = await Product.findByIdAndDelete(req.params.id);
 
 
-    if (!productCategory) {
-        return next(new AppError(`Place does not exist`, 404));
+    if (!product) {
+        return next(new AppError(`Product does not exist`, 404));
     }
 
 
     // remove image too
-    fs.unlink(`${productCategory.backgroundImage}`, (err) => {
+    fs.unlink(`${product.backgroundImage}`, (err) => {
         console.log("image deleted")
         if (err) {
             console.log("Error:delete image ")
@@ -155,7 +158,7 @@ exports.deleteProductSubCategory = catchAsync(async (req, res, next) => {
 
     res.status(200).json({
         status: true,
-        message: "ProductCategory deleted Successfully"
+        message: "Product deleted Successfully"
     })
 
 

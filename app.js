@@ -20,6 +20,7 @@ const clientTypeRouter = require('./routes/clientTypesRoutes')
 const clientRouter = require('./routes/clientRouter')
 const invoiceDepartmentRouter = require('./routes/invoiceDepartmentRouter')
 const productCategory = require('./routes/productCategoryRouter')
+const productRouter = require('./routes/productRouter')
 const AppError = require(`${__dirname}/utils/appError`);
 
 const globalErrorHandler = require(`${__dirname}/controllers/errorController`);
@@ -106,11 +107,12 @@ app.use('/api/v1/unit', unitRouter)
 app.use('/api/v1/subCategory', subCategoryRouter)
 app.use('/api/v1/invoice', invoiceRouter)
 app.use('/api/v1/invoiceDepartment', invoiceDepartmentRouter)
-app.use('/api/v1/selling-points', sellingPointRouter)
+app.use('/api/v1/places', sellingPointRouter)
 app.use('/api/v1/payment-method', paymentMethodRouter)
 app.use('/api/v1/client-types', clientTypeRouter)
 app.use('/api/v1/clients', clientRouter)
 app.use('/api/v1/productCategory', productCategory)
+app.use('/api/v1/products', productRouter)
 app.all('*', (req, res, next) => {
 
     return next(
