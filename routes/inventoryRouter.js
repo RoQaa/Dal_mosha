@@ -6,9 +6,9 @@ const router=express.Router();
 router.use(authController.protect)
 router.post('/createInventory',inventoryController.createInventory)
 router.get('/getInventories',inventoryController.getInventories)
-router.get('/getOneInventory',inventoryController.getOneInventory)
+router.get('/getOneInventory/:id',inventoryController.getOneInventory)
 
-router.patch('/updateInventory',inventoryController.updateInventory)
-router.delete('/deleteInventory',inventoryController.deleteInventory)
+router.patch('/updateInventory/:id',inventoryController.updateInventory)
+router.delete('/deleteInventory/:id',inventoryController.deleteInventory)
 
 module.exports=router
