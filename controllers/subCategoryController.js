@@ -1,7 +1,7 @@
 const multer = require('multer')
 const sharp = require('sharp');
 const fs =require('fs')
-const Ingradient =require('../models/ingradientModel')
+const subCategory =require('../models/subCategoryModel')
 const AppError=require('../utils/appError')
 const {catchAsync}=require('../utils/catchAsync')
 const multerFilter = (req, file, cb) => {
@@ -18,68 +18,68 @@ const upload = multer({
     // limits: { fileSize: 2000000 /* bytes */ },
     fileFilter: multerFilter
 });
-exports.uploadIngradientPhoto = upload.single('backgroundImage');
+exports.uploadsubCategoryPhoto = upload.single('backgroundImage');
 
-exports.resizeIngradientPhoto = catchAsync(async (req, res, next) => {
+exports.resizesubCategoryPhoto = catchAsync(async (req, res, next) => {
     if (!req.file) return next();
 
-    req.file.filename = `Ingradient-${req.params.id}-${Date.now()}.jpeg`;
+    req.file.filename = `subCategory-${req.params.id}-${Date.now()}.jpeg`;
 
     await sharp(req.file.buffer)
         .resize(1300, 800)
         .toFormat('jpeg')
         .jpeg({ quality: 90 })
-        .toFile(`public\\img\\Ingradients\\${req.file.filename}`);
+        .toFile(`public\\img\\subCategorys\\${req.file.filename}`);
        
     next();
 });
 
 
-//TODO:test files in ingredients
-exports.createIngradient=catchAsync(async(req,res,next)=>{
-    const doc = new Ingradient(req.body);
+//TODO:test files in subCategorys
+exports.createsubCategory=catchAsync(async(req,res,next)=>{
+    const doc = new subCategory(req.body);
     const id = doc._id.toString();
 
     if (!doc) {
         return next(new AppError(`SomeThing Error cannot sign up`, 404));
       }
       if (req.file) {
-        req.file.filename = `Ingradient-${id}-${Date.now()}.jpeg`;
+        req.file.filename = `subCategory-${id}-${Date.now()}.jpeg`;
     
         await sharp(req.file.buffer)
           .resize(500, 500)
           .toFormat('jpeg')
           .jpeg({ quality: 90 })
-          .toFile(`public\\img\\Ingradients\\${req.file.filename}`);
-        doc.backgroundImage = `public\\img\\Ingradients\\${req.file.filename}`;
+          .toFile(`public\\img\\subCategorys\\${req.file.filename}`);
+        doc.backgroundImage = `public\\img\\subCategorys\\${req.file.filename}`;
       }
 
       await doc.save();
       res.status(201).json({
         status:true,
-        message:"Ingradient created Successfully",
+        message:"subCategory created Successfully",
         data:doc
       })
       })
 
-exports.getIngradients=catchAsync(async(req,res,next)=>{
-    const Ingradients=await Ingradient.find();
-    if(!Ingradients||Ingradients.length==0) return next(new AppError(`no data`,404))
+exports.getsubCategorys=catchAsync(async(req,res,next)=>{
+    const subCategorys=await subCategory.find();
+    if(!subCategorys||subCategorys.length==0) return next(new AppError(`no data`,404))
         res.status(200).json({
             status:true,
-            Ingradients
+            subCategorys
     })
 })
 
 
 
-exports.updateIngradient=catchAsync(async (req,res,next)=>{
+exports.updatesubCategory=catchAsync(async (req,res,next)=>{
    
     
-    const cat =await Ingradient.findById(req.params.id);
-    if(!cat){    return next(new AppError(`Ingradient not found`,404))}
+    const cat =await subCategory.findById(req.params.id);
+    if(!cat){    return next(new AppError(`subCategory not found`,404))}
     if (req.file) {
-         req.body.backgroundImage = `public\\img\\Ingradients\\${req.file.filename}`;
+         req.body.backgroundImage = `public\\img\\subCategorys\\${req.file.filename}`;
     fs.unlink(`${cat.backgroundImage}`, (err) => {
         console.log("image deleted")
         if(err){
@@ -95,15 +95,15 @@ exports.updateIngradient=catchAsync(async (req,res,next)=>{
 
     res.status(200).json({
         status:true,
-        message:`Successfully updated Ingradient`,
+        message:`Successfully updated subCategory`,
         data:cat
     })
         
 }})
 
-exports.deleteIngradient=catchAsync(async(req,res,next)=>{
-   const cat= await Ingradient.findById(req.params.id)
-    if(!cat) return next(new AppError(`Ingradient not found`,404))
+exports.deletesubCategory=catchAsync(async(req,res,next)=>{
+   const cat= await subCategory.findById(req.params.id)
+    if(!cat) return next(new AppError(`subCategory not found`,404))
   
     fs.unlink(`${cat.backgroundImage}`, (err) => {
         console.log("image deleted")
@@ -112,22 +112,22 @@ exports.deleteIngradient=catchAsync(async(req,res,next)=>{
         }
     });
     
-    await  Ingradient.deleteOne();
+    await  subCategory.deleteOne();
     res.status(200).json({
         status:true,
-        message:"Ingradients deleted Successfully"
+        message:"subCategorys deleted Successfully"
     })
 })
 
-exports.searchIngradient=catchAsync(async(req,res,next)=>{
+exports.searchsubCategory=catchAsync(async(req,res,next)=>{
 
-    const doc = await Ingradient.find(
+    const doc = await subCategory.find(
        
           { name: { $regex: req.params.term, $options: "i" } },
         
         
       ).limit(10);
-      if(!doc||doc.length==0) return next(new AppError(`Ingradient not found`,404))
+      if(!doc||doc.length==0) return next(new AppError(`subCategory not found`,404))
         res.status(200).json({
             status:true,
             data:doc
