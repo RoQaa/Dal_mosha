@@ -19,6 +19,7 @@ const paymentMethodRouter = require('./routes/paymentMethodsRoute')
 const clientTypeRouter = require('./routes/clientTypesRoutes')
 const clientRouter = require('./routes/clientRouter')
 const invoiceDepartmentRouter = require('./routes/invoiceDepartmentRouter')
+const inventoryRouter=require('./routes/inventoryRouter')
 const AppError = require(`${__dirname}/utils/appError`);
 
 const globalErrorHandler = require(`${__dirname}/controllers/errorController`);
@@ -109,6 +110,7 @@ app.use('/api/v1/selling-points', sellingPointRouter)
 app.use('/api/v1/payment-method', paymentMethodRouter)
 app.use('/api/v1/client-types', clientTypeRouter)
 app.use('/api/v1/clients', clientRouter)
+app.use('/api/v1/inventory',inventoryRouter)
 app.all('*', (req, res, next) => {
 
     return next(

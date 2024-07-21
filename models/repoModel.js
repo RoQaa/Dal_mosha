@@ -13,9 +13,9 @@ const repoSchema = new mongoose.Schema({
         type: String
     },
 
-    sellingPoint: {
+    inventory: {
         type: mongoose.Schema.ObjectId,
-        ref: "SellingPoints",
+        ref: "Inventory",
         required: "must have In Inventory"
     }
 
