@@ -9,7 +9,7 @@ const subCategorySchema = new mongoose.Schema({
     stock: {
         type: Number,
         default: 0
-        // required:[true,"must have stock"]
+     
     },
     safeQuantity: {
         type: Number,

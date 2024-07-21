@@ -1,9 +1,10 @@
 const multer = require('multer')
 const sharp = require('sharp');
-const fs =require('fs')
-const subCategory =require('../models/subCategoryModel')
-const AppError=require('../utils/appError')
-const {catchAsync}=require('../utils/catchAsync')
+const fs = require('fs')
+const subCategory = require('../models/subCategoryModel')
+const AppError = require('../utils/appError')
+const {catchAsync} = require('../utils/catchAsync')
+
 const multerFilter = (req, file, cb) => {
 
     if (file.mimetype.startsWith('image')) {
@@ -28,110 +29,109 @@ exports.resizesubCategoryPhoto = catchAsync(async (req, res, next) => {
     await sharp(req.file.buffer)
         .resize(1300, 800)
         .toFormat('jpeg')
-        .jpeg({ quality: 90 })
-        .toFile(`public\\img\\subCategorys\\${req.file.filename}`);
-       
+        .jpeg({quality: 90})
+        .toFile(`public\\img\\subCategories\\${req.file.filename}`);
+
     next();
 });
 
 
-//TODO:test files in subCategorys
-exports.createsubCategory=catchAsync(async(req,res,next)=>{
+//TODO:test files in subCategories
+exports.createsubCategory = catchAsync(async (req, res, next) => {
     const doc = new subCategory(req.body);
     const id = doc._id.toString();
 
     if (!doc) {
-        return next(new AppError(`SomeThing Error cannot sign up`, 404));
-      }
-      if (req.file) {
-        req.file.filename = `subCategory-${id}-${Date.now()}.jpeg`;
-    
-        await sharp(req.file.buffer)
-          .resize(500, 500)
-          .toFormat('jpeg')
-          .jpeg({ quality: 90 })
-          .toFile(`public\\img\\subCategorys\\${req.file.filename}`);
-        doc.backgroundImage = `public\\img\\subCategorys\\${req.file.filename}`;
-      }
-
-      await doc.save();
-      res.status(201).json({
-        status:true,
-        message:"subCategory created Successfully",
-        data:doc
-      })
-      })
-
-exports.getsubCategorys=catchAsync(async(req,res,next)=>{
-    const subCategorys=await subCategory.find();
-    if(!subCategorys||subCategorys.length==0) return next(new AppError(`no data`,404))
-        res.status(200).json({
-            status:true,
-            subCategorys
-    })
-})
-
-
-
-exports.updatesubCategory=catchAsync(async (req,res,next)=>{
-   
-    
-    const cat =await subCategory.findById(req.params.id);
-    if(!cat){    return next(new AppError(`subCategory not found`,404))}
+        return next(new AppError(`Cant add this SubCategory`, 404));
+    }
     if (req.file) {
-         req.body.backgroundImage = `public\\img\\subCategorys\\${req.file.filename}`;
-    fs.unlink(`${cat.backgroundImage}`, (err) => {
-        console.log("image deleted")
-        if(err){
-            console.log("Error:delete image ")
-        }
-        
-    });
+        req.file.filename = `subCategory-${id}-${Date.now()}.jpeg`;
 
-  
+        await sharp(req.file.buffer)
+            .resize(500, 500)
+            .toFormat('jpeg')
+            .jpeg({quality: 90})
+            .toFile(`public\\img\\subCategories\\${req.file.filename}`);
+        doc.backgroundImage = `public\\img\\subCategories\\${req.file.filename}`;
+    }
 
-    Object.assign(cat, req.body); // Assuming `updateData` contains fields to update
-    await cat.save({ validateBeforeSave: false });
-
-    res.status(200).json({
-        status:true,
-        message:`Successfully updated subCategory`,
-        data:cat
-    })
-        
-}})
-
-exports.deletesubCategory=catchAsync(async(req,res,next)=>{
-   const cat= await subCategory.findById(req.params.id)
-    if(!cat) return next(new AppError(`subCategory not found`,404))
-  
-    fs.unlink(`${cat.backgroundImage}`, (err) => {
-        console.log("image deleted")
-        if(err){
-            console.log("Error:delete image ")
-        }
-    });
-    
-    await  subCategory.deleteOne();
-    res.status(200).json({
-        status:true,
-        message:"subCategorys deleted Successfully"
+    await doc.save();
+    res.status(201).json({
+        status: true,
+        message: "subCategory created Successfully",
+        data: doc
     })
 })
 
-exports.searchsubCategory=catchAsync(async(req,res,next)=>{
+exports.getsubCategorys = catchAsync(async (req, res, next) => {
+    const subCategories = await subCategory.find();
+    if (!subCategories || subCategories.length === 0) return next(new AppError(`no data`, 404))
+    res.status(200).json({
+        status: true,
+        subCategories
+    })
+})
+
+
+exports.updatesubCategory = catchAsync(async (req, res, next) => {
+
+
+    const cat = await subCategory.findById(req.params.id);
+    if (!cat) {
+        return next(new AppError(`subCategory not found`, 404))
+    }
+    if (req.file) {
+        req.body.backgroundImage = `public\\img\\subCategories\\${req.file.filename}`;
+        fs.unlink(`${cat.backgroundImage}`, (err) => {
+            console.log("image deleted")
+            if (err) {
+                console.log("Error:delete image ")
+            }
+
+        });
+
+
+        Object.assign(cat, req.body); // Assuming `updateData` contains fields to update
+        await cat.save({validateBeforeSave: false});
+
+        res.status(200).json({
+            status: true,
+            message: `Successfully updated subCategory`,
+            data: cat
+        })
+
+    }
+})
+
+exports.deletesubCategory = catchAsync(async (req, res, next) => {
+    const cat = await subCategory.findById(req.params.id)
+    if (!cat) return next(new AppError(`subCategory not found`, 404))
+
+    fs.unlink(`${cat.backgroundImage}`, (err) => {
+        console.log("image deleted")
+        if (err) {
+            console.log("Error:delete image ")
+        }
+    });
+
+    await subCategory.deleteOne();
+    res.status(200).json({
+        status: true,
+        message: "subCategory deleted Successfully"
+    })
+})
+
+exports.searchsubCategory = catchAsync(async (req, res, next) => {
 
     const doc = await subCategory.find(
-       
-          { name: { $regex: req.params.term, $options: "i" } },
-        
-        
-      ).limit(10);
-      if(!doc||doc.length==0) return next(new AppError(`subCategory not found`,404))
-        res.status(200).json({
-            status:true,
-            data:doc
-        })
+        {name: {$regex: req.params.term, $options: "i"}},
+    ).limit(10);
+    
+    if (!doc || doc.length === 0) return next(new AppError(`subCategory not found`, 404))
+    res.status(200).json({
+        status: true,
+        data: doc
+    })
 })
 
 //TODO: get Ingerient of that invoice 

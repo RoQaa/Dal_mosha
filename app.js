@@ -21,7 +21,7 @@ const clientRouter = require('./routes/clientRouter')
 const invoiceDepartmentRouter = require('./routes/invoiceDepartmentRouter')
 const productCategory = require('./routes/productCategoryRouter')
 const productRouter = require('./routes/productRouter')
-const inventoryRouter=require('./routes/inventoryRouter')
+const inventoryRouter = require('./routes/inventoryRouter')
 const AppError = require(`${__dirname}/utils/appError`);
 
 const globalErrorHandler = require(`${__dirname}/controllers/errorController`);
@@ -30,7 +30,7 @@ const app = express();
 // Global MiddleWares
 
 //set security http headers
-app.use(helmet()); // set el htttp headers property
+app.use(helmet()); // set el http headers property
 
 /*
 app.use(cors());
@@ -47,7 +47,8 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions))
-// Poclicy for blocking images
+
+// Policy for blocking images
 app.use((req, res, next) => {
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
     next();
@@ -65,7 +66,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 //Limit requests from same API
-// hna bn3ml limitng l3dd el mrat elly log in 34an  el brute force attacks
+// hna bn3ml limiting l3dd el mrat elly log in 34an  el brute force attacks
 const limiter = rateLimit({
     max: 1000,
     windowMs: 60 * 60 * 1000,
@@ -115,6 +116,7 @@ app.use('/api/v1/clients', clientRouter)
 app.use('/api/v1/productCategory', productCategory)
 app.use('/api/v1/products', productRouter)
 app.use('/api/v1/inventory', inventoryRouter)
+
 app.all('*', (req, res, next) => {
 
     return next(
