@@ -25,7 +25,13 @@ const placesSchema = new mongoose.Schema({
     },
     backgroundImage: {
         type: String,
+    },
+    kind:{
+        type:String,
+        enum:['فرعي','رئيسي'],
+        default:'فرعي'
     }
+
 
 
 })

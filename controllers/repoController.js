@@ -67,7 +67,7 @@ exports.createRepo=catchAsync(async(req,res,next)=>{
     
 })
 exports.getRepos=catchAsync(async(req,res,next)=>{
-    const repos=await Repo.find();
+    const repos=await Repo.find({inventory:req.params.id});
     if(!repos||repos.length==0) return next(new AppError(`no data`,404))
         res.status(200).json({
             status:true,

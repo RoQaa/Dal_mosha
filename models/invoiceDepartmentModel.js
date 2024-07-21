@@ -4,11 +4,17 @@ const SubCategory=require('./subCategoryModel');
 const AppError = require('../utils/appError');
 
 const invoiceDepartmentSchema = new mongoose.Schema({
-  repo:{
+  from:{
     type:mongoose.Schema.ObjectId,
-    ref:"Repo",
-    required:[true,'must have Repo']
+    ref:'Inventory',
+    required:[true,'must know from what Inventory']
   },
+  to:{
+    type:mongoose.Schema.ObjectId,
+    ref:'Inventory',
+    required:[true,'must know to what Inventory']
+  },
+
   invoiceDepartmentDate:{
     type:Date,
     required:[true,"must have Date"]
@@ -61,8 +67,12 @@ invoiceDepartmentSchema.pre(/^find/,function(next){
     
       if(invoice.status!=='fullfilled') return next();
       
-      const subcategory = await Subcategory.findById(invoice.subCategory);
-      if(!subcategory) return next(new AppError(`ingrediant not found`,400))
+      
+      const subcategory = await SubCategory.findById(invoice.subCategory);
+      if(!subcategory) return next(new AppError(`SubCategory not found`,400))
+
+          console.log(subcategory)
+   
           if (subcategory) {
               if(invoice.kind==='صرف'){
                   

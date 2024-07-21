@@ -4,7 +4,8 @@ const fs = require('fs');
 const Place = require('../models/placesModel');
 const AppError = require('../utils/appError');
 const {catchAsync} = require('../utils/catchAsync');
-const path = require('path')
+const path = require('path');
+const Inventory = require('../models/InventoryModel');
 
 // file upload - resize
 const multerFilter = (req, file, cb) => {
@@ -40,6 +41,7 @@ exports.resizeCategoryPhoto = catchAsync(async (req, res, next) => {
 // Crud
 exports.addPlace = catchAsync(async (req, res, next) => {
     const place = await Place.create(req.body);
+    const inv=await Inventory.create({name:`${req.body.name} -مخزن`,place:place._id})
     if (!place) {
         return next(new AppError('غير قادر على إضافة نقطة البيع هذه', 400));
     }
@@ -67,7 +69,8 @@ exports.addPlace = catchAsync(async (req, res, next) => {
     res.status(201).json({
         status: true,
         message: "تم إنشاء نقطة البيع بنجاح",
-        data: place
+        data: place,
+        invent:inv
     });
 });
 

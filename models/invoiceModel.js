@@ -72,7 +72,9 @@ invoiceSchema.pre('findOneAndUpdate', async function(next) {
     if(invoice.status!=='fullfilled') return next();
   
     const subCategory = await SubCategory.findById(invoice.subCategory);
-        
+    if(!subCategory) return next(new AppError(`SubCategory not found`,400))
+             
+    
         if (subCategory) {
             if(invoice.kind==='وارد'){
                 subCategory.expiryDate = invoice.exp;
