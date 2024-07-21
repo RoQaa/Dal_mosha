@@ -42,7 +42,7 @@ exports.createCategory = catchAsync(async (req, res, next) => {
     const id = doc._id.toString();
 
     if (!doc) {
-        return next(new AppError(`Something went wrong`, 404));
+        return next(new AppError(`Something went wrong`, 500));
     }
     if (req.file) {
         req.file.filename = `Category-${id}-${Date.now()}.jpeg`;
