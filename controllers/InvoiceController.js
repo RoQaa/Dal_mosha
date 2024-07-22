@@ -4,7 +4,7 @@ const fs = require('fs')
 const mongoose = require('mongoose')
 const Invoice = require('../models/invoiceModel')
 const AppError = require('../utils/appError')
-const { catchAsync } = require('../utils/catchAsync')
+const {catchAsync} = require('../utils/catchAsync')
 
 
 const multerFilter = (req, file, cb) => {
@@ -27,9 +27,9 @@ exports.resizeInvoicePhoto = catchAsync(async (req, res, next) => {
 
     if (!req.file) return next();
     let id
-    if (req.body.id) { id = req.body.id; }
-
-    else {
+    if (req.body.id) {
+        id = req.body.id;
+    } else {
         id = new mongoose.Types.ObjectId();
     }
     req.file.filename = `Invoice-${id}-${Date.now()}.jpeg`;
@@ -37,7 +37,7 @@ exports.resizeInvoicePhoto = catchAsync(async (req, res, next) => {
     await sharp(req.file.buffer)
         .resize(1300, 800)
         .toFormat('jpeg')
-        .jpeg({ quality: 90 })
+        .jpeg({quality: 90})
         .toFile(`public\\img\\Invoice\\${req.file.filename}`);
 
     next();
@@ -45,12 +45,12 @@ exports.resizeInvoicePhoto = catchAsync(async (req, res, next) => {
 
 
 exports.createInvoice = catchAsync(async (req, res, next) => {
-   
+
 
     const doc = await Invoice.findOneAndUpdate(
-        { _id: req.body.invoiceId || new mongoose.Types.ObjectId() },
+        {_id: req.body.invoiceId || new mongoose.Types.ObjectId()},
         req.body,
-        { new: true, upsert: true, runValidators: true }
+        {new: true, upsert: true, runValidators: true}
     );
     res.status(200).json({
         status: true,
@@ -62,7 +62,7 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
 
 exports.getInvoices = catchAsync(async (req, res, next) => {
     const Invoices = await Invoice.find();
-    if (!Invoices || Invoices.length == 0) return next(new AppError(`no data`, 404))
+    if (!Invoices || Invoices.length === 0) return next(new AppError(`no data`, 404))
     res.status(200).json({
         status: true,
         Invoices
@@ -121,52 +121,49 @@ exports.deleteInvoice = catchAsync(async (req, res, next) => {
 exports.searchInvoice = catchAsync(async (req, res, next) => {
 
     const doc = await Invoice.find(
-
         {
-            code: { $regex: req.params.term, $options: "i" },
-            price: { $regex: req.params.term, $options: "i" },
-          //  status:{$regex: req.params.term, $options: "i"}
+            code: {$regex: req.params.term, $options: "i"},
+            price: {$regex: req.params.term, $options: "i"},
+            
         }
-
-
     ).limit(10);
-    if (!doc || doc.length == 0) return next(new AppError(`Invoice not found`, 404))
+    if (!doc || doc.length === 0) return next(new AppError(`Invoice not found`, 404))
     res.status(200).json({
         status: true,
         data: doc
     })
 })
 
-exports.searchInvoiceByDate=catchAsync(async(req,res,next)=>{ //done
-  const {startDate,endDate }=req.body;
- 
-  const data = await Invoice.find({
-    invoiceDate: {
-      $gte: startDate,
-      $lte: endDate
-    }
-  });
-  if(!data) return next(new AppError(`No data found`,404))
-    res.status(200).json({
-    status:true,
-    data
+exports.searchInvoiceByDate = catchAsync(async (req, res, next) => { //done
+    const {startDate, endDate} = req.body;
 
-})
-})
-exports.searchInvoiceByStatus=catchAsync(async(req,res,next)=>{ //done
-    
-   
     const data = await Invoice.find({
-      status:req.body.status
-      
-      
+        invoiceDate: {
+            $gte: startDate,
+            $lte: endDate
+        }
     });
-    if(!data) return next(new AppError(`No data found`,404))
-      res.status(200).json({
-      status:true,
-      data
-  
-  })
+    if (!data) return next(new AppError(`No data found`, 404))
+    res.status(200).json({
+        status: true,
+        data
+
+    })
+})
+exports.searchInvoiceByStatus = catchAsync(async (req, res, next) => { //done
+
+
+    const data = await Invoice.find({
+        status: req.body.status
+
+    });
+
+    if (!data) return next(new AppError(`No data found`, 404))
+    res.status(200).json({
+        status: true,
+        data
+
+    })
 })
 
 
