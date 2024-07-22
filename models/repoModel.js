@@ -16,7 +16,7 @@ const repoSchema = new mongoose.Schema({
     inventory: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Inventory",
-        required: "must have In Inventory"
+        required: [true,"must have In Inventory"]
     }
 
 

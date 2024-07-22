@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const categorySchema = new mongoose.Schema({
+const recipeCategorySchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "name required"],
@@ -19,14 +19,14 @@ const categorySchema = new mongoose.Schema({
         required: [true, "Please Enter your Repo"],
     },
 })
-
-categorySchema.pre(/^find/, function (next) {
+/*
+recipeCategorySchema.pre(/^find/, function (next) {
     this.populate({
         path: 'repo',
         select: 'name',
     })
     next();
 })
-
-const Category = mongoose.model('Category', categorySchema)
-module.exports = Category;
+*/
+const RecipeCategory = mongoose.model('RecipeCategory', recipeCategorySchema)
+module.exports = RecipeCategory;

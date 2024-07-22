@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const {v4: uuidv4} = require('uuid');
-const SubCategory = require('./subCategoryModel');
+const Recipe = require('./recipeModel');
 const AppError = require('../utils/appError');
 
 const invoiceDepartmentSchema = new mongoose.Schema({
@@ -20,12 +20,8 @@ const invoiceDepartmentSchema = new mongoose.Schema({
         required: [true, "must have Date"]
     },
     comment: String,
+    
 
-    subCategory: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'subCategory',
-        required: [true, 'subcategory required']
-    },
     quantity: {
         type: Number,
         required: [true, "must have quantity"]
@@ -52,13 +48,15 @@ const invoiceDepartmentSchema = new mongoose.Schema({
 
 })
 
-
+/*
 invoiceDepartmentSchema.pre(/^find/, function (next) {
     this.find().populate({
-        path: 'subCategory'
+        path: 'recipe'
     })
     next();
 })
+    */
+/*
 // Pre-save hook
 invoiceDepartmentSchema.pre('findOneAndUpdate', async function (next) {
 
@@ -67,27 +65,28 @@ invoiceDepartmentSchema.pre('findOneAndUpdate', async function (next) {
     if (invoice.status !== 'fullfilled') return next();
 
 
-    const subcategory = await SubCategory.findById(invoice.subCategory);
-    if (!subcategory) return next(new AppError(`SubCategory not found`, 400))
+    const subrecipeCategory = await Recipe.findById(invoice.recipe);
+    if (!subrecipeCategory) return next(new AppError(`Recipe not found`, 400))
 
-    console.log(subcategory)
+    console.log(subrecipeCategory)
 
-    if (subcategory) {
+    if (subrecipeCategory) {
         if (invoice.kind === 'صرف') {
 
-            subcategory.stock = Number(subcategory.stock || 0) - Number(invoice.quantity); // Sum stock
+            subrecipeCategory.stock = Number(subrecipeCategory.stock || 0) - Number(invoice.quantity); // Sum stock
         }
         if (invoice.kind === 'مرتجع') {
 
-            subcategory.stock = Number(subcategory.stock || 0) + Number(invoice.quantity); // Sum stock
+            subrecipeCategory.stock = Number(subrecipeCategory.stock || 0) + Number(invoice.quantity); // Sum stock
         }
-        if (subcategory.stock < 0) subcategory.stock = 0
+        if (subrecipeCategory.stock < 0) subrecipeCategory.stock = 0
     }
 
-    await subcategory.save();
+    await subrecipeCategory.save();
     next();
 });
+*/
 
 
-const invoiceDepartment = mongoose.model('invoiceDepartment', invoiceDepartmentSchema)
-module.exports = invoiceDepartment;
+const InvoiceDepartment = mongoose.model('InvoiceDepartment', invoiceDepartmentSchema)
+module.exports = InvoiceDepartment;

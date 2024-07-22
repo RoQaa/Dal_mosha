@@ -10,9 +10,9 @@ const cors = require('cors')
 const supplierRouter = require('./routes/supplierRouter')
 const userRouter = require('./routes/userRouter')
 const repoRouter = require('./routes/repoRouter');
-const categoryRouter = require('./routes/categoryRouter')
+const recipeCategoryRouter = require('./routes/recipeCategoryRouter')
 const unitRouter = require('./routes/unitRouter')
-const subCategoryRouter = require('./routes/subCategoryRouter');
+const recipeRouter = require('./routes/recipeRouter');
 const invoiceRouter = require('./routes/invoiceRouter');
 const sellingPointRouter = require('./routes/placesRoutes')
 const paymentMethodRouter = require('./routes/paymentMethodsRoute')
@@ -56,13 +56,13 @@ app.use((req, res, next) => {
 
 //development logging
 if (process.env.NODE_ENV === 'development') {
-    //   app.use(morgan('dev'));
-
+       app.use(morgan('dev'));
+    /*
     morganBody(app, {
         logAllReqHeader: true,
     });
 
-
+*/
 }
 
 //Limit requests from same API
@@ -103,10 +103,10 @@ app.use((req, res, next) => {
 
 app.use('/api/v1/supplier', supplierRouter)
 app.use('/api/v1/repo', repoRouter)
-app.use('/api/v1/category', categoryRouter)
+app.use('/api/v1/recipeCategory', recipeCategoryRouter)
 app.use('/api/v1/user', userRouter)
 app.use('/api/v1/unit', unitRouter)
-app.use('/api/v1/subCategory', subCategoryRouter)
+app.use('/api/v1/recipe', recipeRouter)
 app.use('/api/v1/invoice', invoiceRouter)
 app.use('/api/v1/invoiceDepartment', invoiceDepartmentRouter)
 app.use('/api/v1/places', sellingPointRouter)
