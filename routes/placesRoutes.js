@@ -2,7 +2,7 @@ const express = require('express');
 const authController = require('../controllers/authController')
 const SellingPointController = require('../controllers/placesController')
 const {uploadSellingPointPhoto} = require("../controllers/placesController");
-const {resizeCategoryPhoto} = require("../controllers/categoryController");
+const {resizeCategoryPhoto} = require("../controllers/recipeCategoryController");
 
 const router = express.Router();
 //TODO:admin permissions

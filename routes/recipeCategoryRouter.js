@@ -1,6 +1,6 @@
 const express=require('express');
 const authController=require('../controllers/authController')
-const CategoryController=require('../controllers/categoryController')
+const CategoryController=require('../controllers/recipeCategoryController')
 const router = express.Router();
 //TODO:admin permissions
 

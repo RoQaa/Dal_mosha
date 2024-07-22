@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const AppError = require(`${__dirname}/../utils/appError`);
-const SubCategory = require('./subCategoryModel')
+const Recipe = require('./recipeModel')
 const invoiceSchema = new mongoose.Schema({
     supplier: {
         type: mongoose.Schema.Types.ObjectId,
@@ -39,11 +39,9 @@ const invoiceSchema = new mongoose.Schema({
     },
 
     exp: Date,
-    subCategory: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'subCategory',
-        required: [true, 'subCategory required']
-    },
+    
+
+    
     status: {
         type: String,
         enum: ['rejected', 'fullfilled', 'pending'],
@@ -71,35 +69,35 @@ invoiceSchema.pre('findOneAndUpdate', async function (next) {
     const invoice = this._update;
     if (invoice.status !== 'fullfilled') return next();
 
-    const subCategory = await SubCategory.findById(invoice.subCategory);
-    if (!subCategory) return next(new AppError(`SubCategory not found`, 400))
+    const recipe = await Recipe.findById(invoice.recipe);
+    if (!recipe) return next(new AppError(`Recipe not found`, 400))
 
 
-    if (subCategory) {
+    if (recipe) {
         if (invoice.kind === 'وارد') {
-            subCategory.expiryDate = invoice.exp;
-            subCategory.stock = Number(subCategory.stock || 0) + Number(invoice.quantity); // Sum stock
+            recipe.expiryDate = invoice.exp;
+            recipe.stock = Number(recipe.stock || 0) + Number(invoice.quantity); // Sum stock
         }
         if (invoice.kind === 'هالك') {
-            subCategory.expiryDate = invoice.exp;
-            subCategory.stock = Number(subCategory.stock || 0) - Number(invoice.quantity); // Sum stock
+            recipe.expiryDate = invoice.exp;
+            recipe.stock = Number(recipe.stock || 0) - Number(invoice.quantity); // Sum stock
         }
-        if (subCategory.stock < 0) subCategory.stock = 0
+        if (recipe.stock < 0) recipe.stock = 0
     }
 
-    await subCategory.save();
+    await recipe.save();
     next();
 });
 
-
+/*
 invoiceSchema.pre(/^find/, function (next) {
     this.find().populate({
-        path: 'subCategory'
+        path: 'recipe'
     })
     next();
 })
 
-
+*/
 const Invoice = mongoose.model('Invoice', invoiceSchema)
 module.exports = Invoice;
 //TODO: Status تم  مراجعة والقبول 

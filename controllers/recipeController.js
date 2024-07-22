@@ -1,7 +1,7 @@
 const multer = require('multer')
 const sharp = require('sharp');
 const fs = require('fs')
-const subCategory = require('../models/subCategoryModel')
+const recipe = require('../models/recipeModel')
 const AppError = require('../utils/appError')
 const {catchAsync} = require('../utils/catchAsync')
 
@@ -19,12 +19,12 @@ const upload = multer({
     // limits: { fileSize: 2000000 /* bytes */ },
     fileFilter: multerFilter
 });
-exports.uploadsubCategoryPhoto = upload.single('backgroundImage');
+exports.uploadrecipePhoto = upload.single('backgroundImage');
 
-exports.resizesubCategoryPhoto = catchAsync(async (req, res, next) => {
+exports.resizerecipePhoto = catchAsync(async (req, res, next) => {
     if (!req.file) return next();
 
-    req.file.filename = `subCategory-${req.params.id}-${Date.now()}.jpeg`;
+    req.file.filename = `recipe-${req.params.id}-${Date.now()}.jpeg`;
 
     await sharp(req.file.buffer)
         .resize(1300, 800)
@@ -36,16 +36,16 @@ exports.resizesubCategoryPhoto = catchAsync(async (req, res, next) => {
 });
 
 
-//TODO:test files in subCategories
-exports.createsubCategory = catchAsync(async (req, res, next) => {
-    const doc = new subCategory(req.body);
+
+exports.createrecipe = catchAsync(async (req, res, next) => {
+    const doc = new recipe(req.body);
     const id = doc._id.toString();
 
     if (!doc) {
-        return next(new AppError(`Cant add this SubCategory`, 404));
+        return next(new AppError(`Cant add this Recipe`, 404));
     }
     if (req.file) {
-        req.file.filename = `subCategory-${id}-${Date.now()}.jpeg`;
+        req.file.filename = `recipe-${id}-${Date.now()}.jpeg`;
 
         await sharp(req.file.buffer)
             .resize(500, 500)
@@ -58,62 +58,29 @@ exports.createsubCategory = catchAsync(async (req, res, next) => {
     await doc.save();
     res.status(201).json({
         status: true,
-        message: "subCategory created Successfully",
+        message: "recipe created Successfully",
         data: doc
     })
 })
 
-exports.getsubCategorys = catchAsync(async (req, res, next) => {
-    const subCategories = await subCategory.find();
+exports.getrecipes = catchAsync(async (req, res, next) => {
+    const subCategories = await recipe.find();
     if (!subCategories || subCategories.length === 0) return next(new AppError(`no data`, 404))
     res.status(200).json({
         status: true,
         subCategories
     })
 
-    /*
-const data = await subCategory.aggregate([
- {
-   $lookup: {
-     from: Category.collection.name,
-     localField: 'category',
-     foreignField: '_id',
-     as: 'category',
-     pipeline: [
-       {
-         $lookup: {
-           from: Repo.collection.name,
-           localField: 'repo',
-           foreignField: '_id',
-           as: 'repo',
-           pipeline: [
-             // Add additional stages here if needed
-           ],
-         },
-       },
-       {
-         $unwind: '$repo', // Unwind if you expect a single repo per category
-       },
-     ],
-   },
- },
- {
-   $unwind: '$category', // Unwind if you expect a single category per subCategory
- },
-]).exec();
-res.status(200).json({
- status:true,
- data
-})*/
+
 })
 
 
-exports.updatesubCategory = catchAsync(async (req, res, next) => {
+exports.updaterecipe = catchAsync(async (req, res, next) => {
 
-
-    const cat = await subCategory.findById(req.params.id);
+    c
+    const cat = await recipe.findById(req.params.id);
     if (!cat) {
-        return next(new AppError(`subCategory not found`, 404))
+        return next(new AppError(`recipe not found`, 404))
     }
     if (req.file) {
         req.body.backgroundImage = `public\\img\\SubCategories\\${req.file.filename}`;
@@ -131,16 +98,16 @@ exports.updatesubCategory = catchAsync(async (req, res, next) => {
 
         res.status(200).json({
             status: true,
-            message: `Successfully updated subCategory`,
+            message: `Successfully updated recipe`,
             data: cat
         })
 
     }
 })
 
-exports.deletesubCategory = catchAsync(async (req, res, next) => {
-    const cat = await subCategory.findById(req.params.id)
-    if (!cat) return next(new AppError(`subCategory not found`, 404))
+exports.deleterecipe = catchAsync(async (req, res, next) => {
+    const cat = await recipe.findById(req.params.id)
+    if (!cat) return next(new AppError(`recipe not found`, 404))
 
     fs.unlink(`${cat.backgroundImage}`, (err) => {
         console.log("image deleted")
@@ -149,24 +116,23 @@ exports.deletesubCategory = catchAsync(async (req, res, next) => {
         }
     });
 
-    await subCategory.deleteOne();
+    await recipe.deleteOne();
     res.status(200).json({
         status: true,
-        message: "subCategory deleted Successfully"
+        message: "recipe deleted Successfully"
     })
 })
 
-exports.searchsubCategory = catchAsync(async (req, res, next) => {
+exports.searchrecipe = catchAsync(async (req, res, next) => {
 
-    const doc = await subCategory.find(
+    const doc = await recipe.find(
         {name: {$regex: req.params.term, $options: "i"}},
     ).limit(10);
 
-    if (!doc || doc.length === 0) return next(new AppError(`subCategory not found`, 404))
+    if (!doc || doc.length === 0) return next(new AppError(`recipe not found`, 404))
     res.status(200).json({
         status: true,
         data: doc
     })
 })
 
-//TODO: get Ingerient of that invoice 

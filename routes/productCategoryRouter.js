@@ -9,11 +9,11 @@ const router = express.Router();
 
 router.use(authController.protect)
 
-router.post('/add', uploadSellingPointPhoto, ProductCategoryController.addProductSubCategory);
-router.get('/:id', ProductCategoryController.getProductSubCategory)
-router.get('', ProductCategoryController.getAllProductSubCategory)
-router.put('/:id', uploadSellingPointPhoto, resizeCategoryPhoto, ProductCategoryController.updateProductSubCategory)
-router.delete('/:id', ProductCategoryController.deleteProductSubCategory)
+router.post('/add', uploadSellingPointPhoto, ProductCategoryController.addProductRecipe);
+router.get('/:id', ProductCategoryController.getProductRecipe)
+router.get('', ProductCategoryController.getAllProductRecipe)
+router.put('/:id', uploadSellingPointPhoto, resizeCategoryPhoto, ProductCategoryController.updateProductRecipe)
+router.delete('/:id', ProductCategoryController.deleteProductRecipe)
 
 module.exports = router;
 

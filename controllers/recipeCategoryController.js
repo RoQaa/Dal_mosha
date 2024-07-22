@@ -1,7 +1,7 @@
 const multer = require('multer')
 const sharp = require('sharp');
 const fs = require('fs')
-const Category = require('../models/categoryModel')
+const RecipeCategory = require('../models/recipeCategoryModel')
 const AppError = require('../utils/appError')
 const {catchAsync} = require('../utils/catchAsync')
 
@@ -25,7 +25,7 @@ exports.uploadCategoryPhoto = upload.single('backgroundImage');
 exports.resizeCategoryPhoto = catchAsync(async (req, res, next) => {
     if (!req.file) return next();
 
-    req.file.filename = `Category-${req.params.id}-${Date.now()}.jpeg`;
+    req.file.filename = `RecipeCategory-${req.params.id}-${Date.now()}.jpeg`;
 
     await sharp(req.file.buffer)
         .resize(1300, 800)
@@ -38,14 +38,14 @@ exports.resizeCategoryPhoto = catchAsync(async (req, res, next) => {
 
 
 exports.createCategory = catchAsync(async (req, res, next) => {
-    const doc = new Category(req.body);
+    const doc = new RecipeCategory(req.body);
     const id = doc._id.toString();
 
     if (!doc) {
         return next(new AppError(`Something went wrong`, 404));
     }
     if (req.file) {
-        req.file.filename = `Category-${id}-${Date.now()}.jpeg`;
+        req.file.filename = `RecipeCategory-${id}-${Date.now()}.jpeg`;
 
         await sharp(req.file.buffer)
             .resize(500, 500)
@@ -58,13 +58,13 @@ exports.createCategory = catchAsync(async (req, res, next) => {
     await doc.save();
     res.status(201).json({
         status: true,
-        message: "Category Created Successfully",
+        message: "RecipeCategory Created Successfully",
         data: doc
     })
 
 })
 exports.getCategorys = catchAsync(async (req, res, next) => {
-    let Categories = await Category.find();
+    let Categories = await RecipeCategory.find();
     if (!Categories || Categories.length === 0) return next(new AppError(`no data`, 404))
     res.status(200).json({
         status: true,
@@ -74,11 +74,12 @@ exports.getCategorys = catchAsync(async (req, res, next) => {
 
 
 exports.updateCategory = catchAsync(async (req, res, next) => {
+   
 
-
-    const cat = await Category.findById(req.params.id);
+    const cat = await RecipeCategory.findById(req.params.id);
+    console.log("here")
     if (!cat) {
-        return next(new AppError(`Category not found`, 404))
+        return next(new AppError(`RecipeCategory not found`, 404))
     }
     if (req.file) {
         req.body.backgroundImage = `public\\img\\Categories\\${req.file.filename}`;
@@ -96,7 +97,7 @@ exports.updateCategory = catchAsync(async (req, res, next) => {
 
         res.status(200).json({
             status: true,
-            message: `Successfully updated Category`,
+            message: `Successfully updated RecipeCategory`,
             data: cat
         })
 
@@ -104,8 +105,8 @@ exports.updateCategory = catchAsync(async (req, res, next) => {
 })
 
 exports.deleteCategory = catchAsync(async (req, res, next) => {
-    const cat = await Category.findById(req.params.id)
-    if (!cat) return next(new AppError(`Category not found`, 404))
+    const cat = await RecipeCategory.findById(req.params.id)
+    if (!cat) return next(new AppError(`RecipeCategory not found`, 404))
 
     fs.unlink(`${cat.backgroundImage}`, (err) => {
         console.log("image deleted")
@@ -114,7 +115,7 @@ exports.deleteCategory = catchAsync(async (req, res, next) => {
         }
     });
 
-    await Category.deleteOne();
+    await RecipeCategory.deleteOne();
     res.status(200).json({
         status: true,
         message: "Categories deleted Successfully"
@@ -123,10 +124,10 @@ exports.deleteCategory = catchAsync(async (req, res, next) => {
 
 exports.searchCategory = catchAsync(async (req, res, next) => {
 
-    const doc = await Category.find(
+    const doc = await RecipeCategory.find(
         {name: {$regex: req.params.term, $options: "i"}},
     ).limit(10);
-    if (!doc || doc.length === 0) return next(new AppError(`Category not found`, 404))
+    if (!doc || doc.length === 0) return next(new AppError(`RecipeCategory not found`, 404))
     res.status(200).json({
         status: true,
         data: doc

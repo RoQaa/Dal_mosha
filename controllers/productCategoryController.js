@@ -38,7 +38,7 @@ exports.resizeCategoryPhoto = catchAsync(async (req, res, next) => {
 
 
 // Crud
-exports.addProductSubCategory = catchAsync(async (req, res, next) => {
+exports.addProductRecipe = catchAsync(async (req, res, next) => {
     const productCategory = await ProductCategory.create(req.body);
     if (!productCategory) {
         return next(new AppError('غير قادر على إضافة التصنيف الفرعي', 400));
@@ -72,7 +72,7 @@ exports.addProductSubCategory = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.getProductSubCategory = catchAsync(async (req, res, next) => {
+exports.getProductRecipe = catchAsync(async (req, res, next) => {
     const {id} = req.params;
 
     const productCategory = await ProductCategory.findById(id);
@@ -83,7 +83,7 @@ exports.getProductSubCategory = catchAsync(async (req, res, next) => {
     })
 })
 
-exports.getAllProductSubCategory = catchAsync(async (req, res, next) => {
+exports.getAllProductRecipe = catchAsync(async (req, res, next) => {
 
     const {name} = req.query;
 
@@ -103,7 +103,7 @@ exports.getAllProductSubCategory = catchAsync(async (req, res, next) => {
 });
 
 
-exports.updateProductSubCategory = catchAsync(async (req, res, next) => {
+exports.updateProductRecipe = catchAsync(async (req, res, next) => {
     const productCategory = await ProductCategory.findById(req.params.id);
     if (!productCategory) {
         return next(new AppError(`ProductCategory does not exist`, 404));
@@ -134,7 +134,7 @@ exports.updateProductSubCategory = catchAsync(async (req, res, next) => {
 });
 
 
-exports.deleteProductSubCategory = catchAsync(async (req, res, next) => {
+exports.deleteProductRecipe = catchAsync(async (req, res, next) => {
 
 
     const productCategory = await ProductCategory.findByIdAndDelete(req.params.id);
