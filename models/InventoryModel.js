@@ -15,7 +15,7 @@ const inventorySchema = new mongoose.Schema({
 inventorySchema.pre(/^find/, function (next) {
     this.populate({
         path: 'place'
-    })
+    }).select('-__v')
     next();
 })
 

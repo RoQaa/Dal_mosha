@@ -5,7 +5,7 @@ const router = express.Router();
 //TODO:admin permissions
 
 router.use(authController.protect)
-router.put('/createinvoiceDepartment',invoiceController.createInvoice),
+router.post('/createinvoiceDepartment',invoiceController.createInvoice),
 router.get('/getinvoiceDepartment',invoiceController.getInvoices)
 router.delete('/deleteinvoiceDepartment/:id',invoiceController.deleteInvoice)
 router.get('/search/:term',invoiceController.searchInvoice)

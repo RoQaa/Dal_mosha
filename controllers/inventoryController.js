@@ -11,10 +11,11 @@ exports.createInventory = catchAsync(async (req, res, next) => {
     })
 })
 exports.getInventories = catchAsync(async (req, res, next) => {
-    const data = await Inventory.find();
+    const data = await Inventory.find().select('-__v');
     if (!data || data.length === 0) return next(new AppError(`no data`, 404))
     res.status(200).json({
         status: true,
+        length:data.length,
         data
     })
 })

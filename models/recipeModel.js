@@ -62,7 +62,7 @@ recipeSchema.pre(/^find/, function (next) {
         { path: 'recipeCategory' },  // Example of selecting specific fields
       //  { path: 'invoice' }, 
         //{ path: 'invoiceDepartment', match: { active: true } }  // Example of matching criteria
-    ]);
+    ]).select('-__v');
     next();
 });
 

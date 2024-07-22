@@ -1,9 +1,11 @@
+
 const RecipeQuantity=require('../models/recipeQuantity')
 const AppError = require('../utils/appError')
 const {catchAsync} = require('../utils/catchAsync')
 
 exports.create=catchAsync(async(req,res,next)=>{
-    const doc= await RecipeQuantity.create();
+
+    const doc= await RecipeQuantity.create(req.body);
     res.status(200).json({
         status:true,
         message:"created Successfully",

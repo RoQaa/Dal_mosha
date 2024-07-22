@@ -1,8 +1,5 @@
 const mongoose = require('mongoose');
-const {v4: uuidv4} = require('uuid');
-
-
-
+const { v4: uuidv4 } = require('uuid');
 const invoiceDepartmentSchema = new mongoose.Schema({
     from: {
         type: mongoose.Schema.Types.ObjectId,
@@ -17,22 +14,17 @@ const invoiceDepartmentSchema = new mongoose.Schema({
 
     invoiceDepartmentDate: {
         type: Date,
-        required: [true, "must have Date"]
+        default:Date.now()
+        //required: [true, "must have Date"]
     },
     comment: String,
-    
-
-    quantity: {
-        type: Number,
-        required: [true, "must have quantity"]
-    },
 
     status: {
         type: String,
         enum: ['rejected', 'fullfilled', 'pending'],
         default: 'pending'
     },
-    price: {
+    total_price: {
         type: Number,
         required: [true, 'must have price']
     },
@@ -43,7 +35,7 @@ const invoiceDepartmentSchema = new mongoose.Schema({
     },
 
 
-    serialNumber: {type: String, unique: true, default: uuidv4},
+    serialNumber: { type: String, unique: true, default: uuidv4 },
 
 
 })

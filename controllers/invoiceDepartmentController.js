@@ -3,22 +3,25 @@ const mongoose = require('mongoose')
 const InvoiceDepartment = require('../models/invoiceDepartmentModel')
 const AppError = require('../utils/appError')
 const { catchAsync } = require('../utils/catchAsync');
+const RecipeQuantity = require('../models/recipeQuantity');
 
 
 exports.createInvoice = catchAsync(async (req, res, next) => {
-   
-
-    const doc = await InvoiceDepartment.findOneAndUpdate(
-        { _id: req.body.InvoiceDepartmentId || new mongoose.Types.ObjectId() },
-        req.body,
-        { new: true, upsert: true, runValidators: true }
+    
+  //FIXME: here need to update
+    const invoice = await  InvoiceDepartment.create(req.body.invoiceDepartment)
+        const recipe=await  RecipeQuantity.findByIdAndUpdate(  {_id: req.body.invoiceId || new mongoose.Types.ObjectId()},
+        req.body.recipe_data,
+        {new: true, upsert: true, runValidators: true}
     );
+    //const doc= await RecipeQuantity.create()
     res.status(200).json({
         status: true,
         message: "InvoiceDepartment Created Successfully",
         data: doc
 
     });
+  
 })
 
 exports.getInvoices = catchAsync(async (req, res, next) => {
