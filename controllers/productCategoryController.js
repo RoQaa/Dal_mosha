@@ -93,12 +93,12 @@ exports.getAllProductRecipe = catchAsync(async (req, res, next) => {
         filter.name = {$regex: name, $options: 'i'};
     }
 
-    const allProductCategories = await ProductCategory.find(filter);
+    const allProductrecipeCategories = await ProductCategory.find(filter);
 
 
     return res.status(200).json({
         status: true,
-        allProductCategories
+        allProductrecipeCategories
     });
 });
 

@@ -30,7 +30,7 @@ exports.resizerecipePhoto = catchAsync(async (req, res, next) => {
         .resize(1300, 800)
         .toFormat('jpeg')
         .jpeg({quality: 90})
-        .toFile(`public\\img\\SubCategories\\${req.file.filename}`);
+        .toFile(`public\\img\\recipe\\${req.file.filename}`);
 
     next();
 });
@@ -51,8 +51,8 @@ exports.createrecipe = catchAsync(async (req, res, next) => {
             .resize(500, 500)
             .toFormat('jpeg')
             .jpeg({quality: 90})
-            .toFile(`public\\img\\SubCategories\\${req.file.filename}`);
-        doc.backgroundImage = `public\\img\\SubCategories\\${req.file.filename}`;
+            .toFile(`public\\img\\recipe\\${req.file.filename}`);
+        doc.backgroundImage = `public\\img\\recipe\\${req.file.filename}`;
     }
 
     await doc.save();
@@ -64,11 +64,11 @@ exports.createrecipe = catchAsync(async (req, res, next) => {
 })
 
 exports.getrecipes = catchAsync(async (req, res, next) => {
-    const subCategories = await recipe.find();
-    if (!subCategories || subCategories.length === 0) return next(new AppError(`no data`, 404))
+    const subrecipeCategories = await recipe.find();
+    if (!subrecipeCategories || subrecipeCategories.length === 0) return next(new AppError(`no data`, 404))
     res.status(200).json({
         status: true,
-        subCategories
+        subrecipeCategories
     })
 
 
@@ -83,7 +83,7 @@ exports.updaterecipe = catchAsync(async (req, res, next) => {
         return next(new AppError(`recipe not found`, 404))
     }
     if (req.file) {
-        req.body.backgroundImage = `public\\img\\SubCategories\\${req.file.filename}`;
+        req.body.backgroundImage = `public\\img\\recipe\\${req.file.filename}`;
         fs.unlink(`${cat.backgroundImage}`, (err) => {
             console.log("image deleted")
             if (err) {

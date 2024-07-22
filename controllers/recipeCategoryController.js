@@ -31,7 +31,7 @@ exports.resizeCategoryPhoto = catchAsync(async (req, res, next) => {
         .resize(1300, 800)
         .toFormat('jpeg')
         .jpeg({quality: 90})
-        .toFile(`public\\img\\Categories\\${req.file.filename}`);
+        .toFile(`public\\img\\recipeCategories\\${req.file.filename}`);
 
     next();
 });
@@ -51,8 +51,8 @@ exports.createCategory = catchAsync(async (req, res, next) => {
             .resize(500, 500)
             .toFormat('jpeg')
             .jpeg({quality: 90})
-            .toFile(`public\\img\\Categories\\${req.file.filename}`);
-        doc.backgroundImage = `public\\img\\Categories\\${req.file.filename}`;
+            .toFile(`public\\img\\recipeCategories\\${req.file.filename}`);
+        doc.backgroundImage = `public\\img\\recipeCategories\\${req.file.filename}`;
     }
 
     await doc.save();
@@ -64,11 +64,11 @@ exports.createCategory = catchAsync(async (req, res, next) => {
 
 })
 exports.getCategorys = catchAsync(async (req, res, next) => {
-    let Categories = await RecipeCategory.find();
-    if (!Categories || Categories.length === 0) return next(new AppError(`no data`, 404))
+    let recipeCategories = await RecipeCategory.find();
+    if (!recipeCategories || recipeCategories.length === 0) return next(new AppError(`no data`, 404))
     res.status(200).json({
         status: true,
-        Categories
+        recipeCategories
     })
 })
 
@@ -77,12 +77,14 @@ exports.updateCategory = catchAsync(async (req, res, next) => {
    
 
     const cat = await RecipeCategory.findById(req.params.id);
-    console.log("here")
+   
     if (!cat) {
         return next(new AppError(`RecipeCategory not found`, 404))
     }
+
     if (req.file) {
-        req.body.backgroundImage = `public\\img\\Categories\\${req.file.filename}`;
+        
+        req.body.backgroundImage = `public\\img\\recipeCategories\\${req.file.filename}`;
         fs.unlink(`${cat.backgroundImage}`, (err) => {
             console.log("image deleted")
             if (err) {
@@ -91,7 +93,7 @@ exports.updateCategory = catchAsync(async (req, res, next) => {
 
         });
 
-
+        
         Object.assign(cat, req.body); // Assuming `updateData` contains fields to update
         await cat.save({validateBeforeSave: false});
 
@@ -118,7 +120,7 @@ exports.deleteCategory = catchAsync(async (req, res, next) => {
     await RecipeCategory.deleteOne();
     res.status(200).json({
         status: true,
-        message: "Categories deleted Successfully"
+        message: "recipeCategories deleted Successfully"
     })
 })
 

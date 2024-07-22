@@ -19,14 +19,14 @@ const recipeCategorySchema = new mongoose.Schema({
         required: [true, "Please Enter your Repo"],
     },
 })
-/*
+
 recipeCategorySchema.pre(/^find/, function (next) {
     this.populate({
         path: 'repo',
-        select: 'name',
+      //  select: 'name',
     })
     next();
 })
-*/
+
 const RecipeCategory = mongoose.model('RecipeCategory', recipeCategorySchema)
 module.exports = RecipeCategory;
