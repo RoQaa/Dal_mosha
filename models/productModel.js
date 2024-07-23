@@ -47,6 +47,7 @@ const productSchema = new mongoose.Schema({
             type: String,
         }
     }],
+    
     place: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Place",

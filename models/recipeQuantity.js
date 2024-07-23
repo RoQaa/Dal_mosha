@@ -1,29 +1,34 @@
 /**
  *  'order',
-        'quantity',
-        'remaining',
-        'price',
-        'expire_date',
-        'department_store_id',
-        'invoice_id',
-        'recipe_id',
-        'total_price' => virtual
-*/
-/**        'from',
-        'to',
-        'supplier_id',
-        'code',
-        'invoice_date',
-        'status',
-        'invoice_price',
-        'total_price',
-        'image',
-        'type',
-        'discount',
-        'tax',
-        'note',
-        'is_paid'
-         */
+ 'quantity',
+ 'remaining',
+ 'price',
+ 'expire_date',
+ 'department_store_id',
+ 'invoice_id',
+ 'recipe_id',
+ 'total_price' => virtual
+ */
+
+
+/**
+ 'from',
+ 'to',
+ 'supplier_id',
+ 'code',
+ 'invoice_date',
+ 'status',
+ 'invoice_price',
+ 'total_price',
+ 'image',
+ 'type',
+ 'discount',
+ 'tax',
+ 'note',
+ 'is_paid'
+ */
+
+
 const mongoose = require('mongoose');
 const recipeQuantitySchema = new mongoose.Schema({
     quantity: {
@@ -36,7 +41,7 @@ const recipeQuantitySchema = new mongoose.Schema({
     },
     invoice_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:'InvoiceDepartment',
+        ref: 'InvoiceDepartment',
         required: [true, 'must have invoice_id']
 
     },
@@ -62,9 +67,9 @@ const recipeQuantitySchema = new mongoose.Schema({
 
 recipeQuantitySchema.pre(/^find/, function (next) {
     this.populate([
-        { path: 'recipe_id' },
-        { path: 'invoice_id' },
-        { path: 'inventory_id' },
+        {path: 'recipe_id'},
+        {path: 'invoice_id'},
+        {path: 'inventory_id'},
     ]);
     next();
 });
