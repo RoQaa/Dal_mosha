@@ -67,9 +67,9 @@ const recipeQuantitySchema = new mongoose.Schema({
 
 recipeQuantitySchema.pre(/^find/, function (next) {
     this.populate([
-        { path: 'recipe_id' },
-        { path: 'invoice_id' },
-        { path: 'inventory_id' },
+        {path: 'recipe_id'},
+        {path: 'invoice_id'},
+        {path: 'inventory_id'},
     ]);
     next();
 });
