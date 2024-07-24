@@ -5,9 +5,9 @@ const router = express.Router();
 //TODO:admin permissions
 
 router.use(authController.protect)
-router.put('/createinvoice',invoiceController.uploadInvoicePhoto,invoiceController.resizeInvoicePhoto,invoiceController.createInvoice),
+router.post('/createSupplierInvoice',invoiceController.uploadInvoicePhoto,invoiceController.createSupplierInvoice),
 router.get('/getinvoices',invoiceController.getInvoices)
-//router.patch('/updateinvoice/:id',invoiceController.uploadInvoicePhoto,invoiceController.resizeInvoicePhoto,invoiceController.updateInvoice)
+router.patch('/updateinvoice/:id',invoiceController.uploadInvoicePhoto,invoiceController.resizeInvoicePhoto,invoiceController.updateInvoice)
 router.delete('/deleteinvoice/:id',invoiceController.deleteInvoice)
 router.get('/search/:term',invoiceController.searchInvoice)
 router.post('/searchByDate',invoiceController.searchInvoiceByDate)

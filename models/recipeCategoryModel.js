@@ -17,6 +17,7 @@ const recipeCategorySchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Repo",
         required: [true, "Please Enter your Repo"],
+
     },
 })
 

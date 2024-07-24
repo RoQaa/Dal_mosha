@@ -7,13 +7,7 @@ const recipeSchema = new mongoose.Schema({
         required: [true, "must have name"],
         unique: [true, "this name used before"]
     },
-    /*
-    stock: {
-        type: Number,
-        default: 0
-     
-    },
-    */
+  
     minimum_limt: {
         type: Number,
         required: [true, "must have safeQuantity"]
@@ -22,12 +16,7 @@ const recipeSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'must have days alert']
     },
-    /*
-    expiryDate: {
-        type: Date,
-        //  required:[true,"must have expiry date"]
-    },
-    */
+  
     unit: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Unit',
@@ -42,29 +31,14 @@ const recipeSchema = new mongoose.Schema({
         type: String,
         required: [true, "backgroundImage required"]
     },
-    /*
-    invoice:{
-        type:mongoose.Schema.ObjectId,
-        ref:'Invoice', 
-    },
-    invoiceDepartment:{
-        type:mongoose.Schema.ObjectId,
-        ref:'InvoiceDepartment',
-        
-    }
-*/
 
 
 })
-
-recipeSchema.pre(/^find/, function (next) {
-    this.populate([
-        { path: 'recipeCategory' },  // Example of selecting specific fields
-      //  { path: 'invoice' }, 
-        //{ path: 'invoiceDepartment', match: { active: true } }  // Example of matching criteria
-    ]).select('-__v');
+recipeSchema.pre(/^find/,function(next){
+    this.populate([{path:"unit"},{path:"recipeCategory"}])
     next();
-});
+})
+
 
 
 const recipe = mongoose.model('recipe', recipeSchema);

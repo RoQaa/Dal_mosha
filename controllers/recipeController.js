@@ -3,7 +3,8 @@ const sharp = require('sharp');
 const fs = require('fs')
 const recipe = require('../models/recipeModel')
 const AppError = require('../utils/appError')
-const {catchAsync} = require('../utils/catchAsync')
+const {catchAsync} = require('../utils/catchAsync');
+const RecipeQuantity = require('../models/recipeQuantity');
 
 const multerFilter = (req, file, cb) => {
 
@@ -56,6 +57,7 @@ exports.createrecipe = catchAsync(async (req, res, next) => {
     }
 
     await doc.save();
+
     res.status(201).json({
         status: true,
         message: "recipe created Successfully",
@@ -64,11 +66,11 @@ exports.createrecipe = catchAsync(async (req, res, next) => {
 })
 
 exports.getrecipes = catchAsync(async (req, res, next) => {
-    const subrecipeCategories = await recipe.find();
-    if (!subrecipeCategories || subrecipeCategories.length === 0) return next(new AppError(`no data`, 404))
+    const recipes = await recipe.find();
+    if (!recipes || recipes.length === 0) return next(new AppError(`no data`, 404))
     res.status(200).json({
         status: true,
-        subrecipeCategories
+        recipes
     })
 
 
@@ -77,7 +79,6 @@ exports.getrecipes = catchAsync(async (req, res, next) => {
 
 exports.updaterecipe = catchAsync(async (req, res, next) => {
 
-    c
     const cat = await recipe.findById(req.params.id);
     if (!cat) {
         return next(new AppError(`recipe not found`, 404))

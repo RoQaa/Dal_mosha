@@ -1,12 +1,26 @@
 const mongoose = require('mongoose');
 const AppError = require(`${__dirname}/../utils/appError`);
-const Recipe = require('./recipeModel')
+//const Recipe = require('./recipeModel')
+//TODO: update invoice model
 const invoiceSchema = new mongoose.Schema({
     supplier: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Supplier',
         required: [true, 'supplier required']
     },
+    from:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Inventory',
+       // required:[true,'need inventory {from}']
+
+    },
+    to:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Inventory',
+        required:[true,'need inventory {to}']
+
+    },
+  
     invoiceDate: {
         type: Date,
         default: Date.now(),
@@ -14,6 +28,7 @@ const invoiceSchema = new mongoose.Schema({
     },
     code: {
         type: String,
+        unique:[true,'must have 1'],
         required: [true, 'code required']
     },
     backgroundImage: {
@@ -23,25 +38,17 @@ const invoiceSchema = new mongoose.Schema({
     discount: {
         type: Number
     },
-    tax: {
+    taxs: {
         type: Number
     },
     comment: {
         type: String
     },
-    price: {
+    total_price: {
         type: Number,
-        required: [true, 'must have price']
-    },
-    quantity: {
-        type: Number,
-        required: [true, 'must have quntitiy']
+      //  required: [true, 'must have price']
     },
 
-    exp: Date,
-    
-
-    
     status: {
         type: String,
         enum: ['rejected', 'fullfilled', 'pending'],
@@ -50,14 +57,22 @@ const invoiceSchema = new mongoose.Schema({
     kind: {
         type: String,
         required: [true, 'kind required'],
-        enum: ['هالك', 'وارد']
+        enum: ['صرف','مرتجع','هالك', 'وارد']
     }
 
 
-}, {
-    toJSON: {virtuals: true},
-    toObject: {virtuals: true}
 })
+    invoiceSchema.pre(/^find/,function(next){
+        this.populate([
+            {path:'supplier'},
+            {path:'from'},
+            {path:'to'}
+
+        ])
+        next();
+    })
+
+/*
 invoiceSchema.virtual('totalPrice').get(function () {
     return (this.price * this.quantity) + this.tax - this.discount;
 });
@@ -65,8 +80,9 @@ invoiceSchema.virtual('totalPrice').get(function () {
 
 // Pre-save hook
 invoiceSchema.pre('findOneAndUpdate', async function (next) {
-
+    
     const invoice = this._update;
+   
     if (invoice.status !== 'fullfilled') return next();
 
     const recipe = await Recipe.findById(invoice.recipe);
@@ -88,7 +104,7 @@ invoiceSchema.pre('findOneAndUpdate', async function (next) {
     await recipe.save();
     next();
 });
-
+*/
 /*
 invoiceSchema.pre(/^find/, function (next) {
     this.find().populate({
@@ -100,4 +116,3 @@ invoiceSchema.pre(/^find/, function (next) {
 */
 const Invoice = mongoose.model('Invoice', invoiceSchema)
 module.exports = Invoice;
-//TODO: Status تم  مراجعة والقبول 
