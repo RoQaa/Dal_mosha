@@ -124,7 +124,7 @@ exports.searchInvoice = catchAsync(async (req, res, next) => {
         {
             code: {$regex: req.params.term, $options: "i"},
             price: {$regex: req.params.term, $options: "i"},
-            
+
         }
     ).limit(10);
     if (!doc || doc.length === 0) return next(new AppError(`Invoice not found`, 404))
@@ -150,8 +150,8 @@ exports.searchInvoiceByDate = catchAsync(async (req, res, next) => { //done
 
     })
 })
-exports.searchInvoiceByStatus = catchAsync(async (req, res, next) => { //done
 
+exports.searchInvoiceByStatus = catchAsync(async (req, res, next) => { //done
 
     const data = await Invoice.find({
         status: req.body.status
