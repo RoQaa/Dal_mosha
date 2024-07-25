@@ -154,7 +154,7 @@ exports.confirmOrRefuseReturnedInvoice=catchAsync(async(req,res,next)=>{
     */
         res.status(200).json({
             status:true,
-            message:"invoice full filled",
+            message:"invoice full filled and returned",
           /*  data_from:data1,
             data_main:data2,
             increase_quantity_to,
