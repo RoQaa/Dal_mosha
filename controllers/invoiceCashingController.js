@@ -28,12 +28,13 @@ exports.uploadInvoicePhoto = upload.single('backgroundImage');
 
 
 
-exports.createSupplierInvoice = catchAsync(async (req, res, next) => {
-    const inventory= await Inventory.findById(req.body.to)
+exports.createCashingInvoice = catchAsync(async (req, res, next) => {
+    const inventory= await Inventory.findById(req.body.from)
 
     if(!inventory||inventory.place.kind!=='رئيسي') 
         return next(new AppError(`don't have permission or inventory not found`,400))
-
+        req.body.kind='صرف'
+        
         const doc = new Invoice(req.body);
         const id = doc._id.toString();
 
@@ -66,7 +67,7 @@ exports.createSupplierInvoice = catchAsync(async (req, res, next) => {
         
 })
 
-exports.confirmOrRefuseSupplierInvoice=catchAsync(async(req,res,next)=>{
+exports.confirmOrRefuseCashingInvoice=catchAsync(async(req,res,next)=>{
     const doc = await Invoice.findByIdAndUpdate(req.params.id,{status:req.body.status},{new:true,runValidators:true})
        if(!req.body.status||doc.status!=='fullfilled'){
         return res.status(200).json({

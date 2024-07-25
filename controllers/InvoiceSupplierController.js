@@ -32,7 +32,7 @@ exports.createSupplierInvoice = catchAsync(async (req, res, next) => {
 
     if(!inventory||inventory.place.kind!=='رئيسي') 
         return next(new AppError(`don't have permission or inventory not found`,400))
-
+        req.body.kind='وارد'
         const doc = new Invoice(req.body);
         const id = doc._id.toString();
 
@@ -78,7 +78,7 @@ exports.confirmOrRefuseSupplierInvoice=catchAsync(async(req,res,next)=>{
             req.body.invoice_id=doc._id
            
         
-        const {inventory_id,invoice_id,recipeQuantity_id,quantity,price,expire_date}=req.body;
+        const {inventory_id,invoice_id,recipe_id,quantity,price,expire_date}=req.body;
         
         const rec={
             inventory_id:inventory_id,    
@@ -86,10 +86,10 @@ exports.confirmOrRefuseSupplierInvoice=catchAsync(async(req,res,next)=>{
             quantity: quantity,
             price:price,
             expire_date:expire_date,
-            
+            recipe_id:recipe_id
         }
     
-            const recipeQuantity= await RecipeQuantity.findByIdAndUpdate(recipeQuantity_id,rec,{new:true,runValidators:true})
+            const recipeQuantity= await RecipeQuantity.create(rec)
             if(!recipeQuantity) return next(new AppError('recipe Quantity not found',404))
             res.status(200).json({
                 status:true,
