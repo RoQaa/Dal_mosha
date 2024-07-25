@@ -8,6 +8,7 @@ const AppError = require('../utils/appError')
 const {catchAsync} = require('../utils/catchAsync');
 const RecipeQuantity = require('../models/recipeQuantity');
 
+const main_inventory_id=process.env.MAIN_INVENTORY_ID
 
 const multerFilter = (req, file, cb) => {
 
@@ -28,7 +29,7 @@ exports.uploadInvoicePhoto = upload.single('backgroundImage');
 
 
 exports.createSupplierInvoice = catchAsync(async (req, res, next) => {
-    const inventory= await Inventory.findById(req.body.to)
+    const inventory= await Inventory.findById(main_inventory_id)
 
     if(!inventory||inventory.place.kind!=='رئيسي') 
         return next(new AppError(`don't have permission or inventory not found`,400))
@@ -78,10 +79,10 @@ exports.confirmOrRefuseSupplierInvoice=catchAsync(async(req,res,next)=>{
             req.body.invoice_id=doc._id
            
         
-        const {inventory_id,invoice_id,recipe_id,quantity,price,expire_date}=req.body;
+        const {invoice_id,recipe_id,quantity,price,expire_date}=req.body;
         
         const rec={
-            inventory_id:inventory_id,    
+            inventory_id:main_inventory_id,    
             invoice_id: invoice_id,
             quantity: quantity,
             price:price,
