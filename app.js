@@ -13,7 +13,9 @@ const repoRouter = require('./routes/repoRouter');
 const recipeCategoryRouter = require('./routes/recipeCategoryRouter')
 const unitRouter = require('./routes/unitRouter')
 const recipeRouter = require('./routes/recipeRouter');
-const invoiceRouter = require('./routes/invoiceRouter');
+
+const invoiceSupplierRouter = require('./routes/invoiceSupplierRouter');
+const invoiceFeatureRouter=require('./routes/invoiceFeaturesRouter')
 const sellingPointRouter = require('./routes/placesRoutes')
 const paymentMethodRouter = require('./routes/paymentMethodsRoute')
 const clientTypeRouter = require('./routes/clientTypesRoutes')
@@ -102,13 +104,21 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use('/api/v1/user', userRouter)
+
 app.use('/api/v1/supplier', supplierRouter)
+app.use('/api/v1/unit', unitRouter)
+
 app.use('/api/v1/repo', repoRouter)
 app.use('/api/v1/recipeCategory', recipeCategoryRouter)
-app.use('/api/v1/user', userRouter)
-app.use('/api/v1/unit', unitRouter)
 app.use('/api/v1/recipe', recipeRouter)
-app.use('/api/v1/invoice', invoiceRouter)
+
+
+
+
+app.use('/api/v1/invoiceSupplier', invoiceSupplierRouter)
+app.use('/api/v1/invoiceFeatures',invoiceFeatureRouter)
+
 
 app.use('/api/v1/places', sellingPointRouter)
 app.use('/api/v1/payment-method', paymentMethodRouter)
