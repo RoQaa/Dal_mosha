@@ -17,7 +17,7 @@ const recipeRouter = require('./routes/recipeRouter');
 const invoiceSupplierRouter = require('./routes/invoiceSupplierRouter');
 const invoiceFeatureRouter = require('./routes/invoiceFeaturesRouter')
 const invoiceCashingRouter = require('./routes/invoiceCashingRouter') 
-
+const invoiceReturnedRouter = require('./routes/invoiceReturnedRouter')
 const sellingPointRouter = require('./routes/placesRoutes')
 const paymentMethodRouter = require('./routes/paymentMethodsRoute')
 const clientTypeRouter = require('./routes/clientTypesRoutes')
@@ -120,8 +120,8 @@ app.use('/api/v1/recipe', recipeRouter)
 
 app.use('/api/v1/invoiceSupplier', invoiceSupplierRouter)
 app.use('/api/v1/invoiceFeatures',invoiceFeatureRouter)
-
 app.use('/api/v1/invoiceCashing',invoiceCashingRouter)
+app.use('/api/v1/invoiceReturned',invoiceReturnedRouter)
 
 app.use('/api/v1/places', sellingPointRouter)
 app.use('/api/v1/payment-method', paymentMethodRouter)

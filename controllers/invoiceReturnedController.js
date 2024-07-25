@@ -28,26 +28,26 @@ exports.uploadInvoicePhoto = upload.single('backgroundImage');
 
 
    /**
-     * -[x] check inventory from, 	
-     * -[x] check inventory to,
-     * -[x] get all quantities of (from) and chect about quantity u send
-     * -[x] add minus (-) recipeQuantity for رئيسي
-     * -[x] create new recipeQuantity for to
-     * -[x] res
+     * -[] check inventory from, 	
+     * -[] check inventory to,
+     * -[] get all quantities of (from) and chect about quantity u send
+     * -[] add minus (-) recipeQuantity for رئيسي
+     * -[] create new recipeQuantity for to
+     * -[] res
      */
 
 
-exports.createCashingInvoice = catchAsync(async (req, res, next) => {
-    req.body.from=main_inventory_id;
-    const inventory_from= await Inventory.findById(main_inventory_id)
+exports.createReturnedInvoice = catchAsync(async (req, res, next) => {
+    req.body.to=main_inventory_id;
+    const inventory_to= await Inventory.findById(main_inventory_id)
 
-    if(!inventory_from||inventory_from.place.kind!=='رئيسي') 
+    if(!inventory_to||inventory_to.place.kind!=='رئيسي') 
         return next(new AppError(`don't have permission or inventory not found`,400))
 
-            const inventory_to=await Inventory.findById(req.body.to)
-                if(!inventory_to) return next(new AppError(`inventory_to not found`,404))
+            const inventory_from=await Inventory.findById(req.body.from)
+                if(!inventory_from) return next(new AppError(`inventory_from not found`,404))
 
-        req.body.kind='صرف'
+        req.body.kind='مرتجع'
 
         const doc = new Invoice(req.body);
         const id = doc._id.toString();
@@ -80,7 +80,7 @@ exports.createCashingInvoice = catchAsync(async (req, res, next) => {
         
 })
 
-exports.confirmOrRefuseCashingInvoice=catchAsync(async(req,res,next)=>{
+exports.confirmOrRefuseReturnedInvoice=catchAsync(async(req,res,next)=>{
     const doc = await Invoice.findByIdAndUpdate(req.params.id,{status:req.body.status},{new:true,runValidators:true})
 
        if(!req.body.status||doc.status!=='fullfilled'){
@@ -92,7 +92,7 @@ exports.confirmOrRefuseCashingInvoice=catchAsync(async(req,res,next)=>{
 
        const data = await RecipeQuantity.aggregate([
         {
-            $match: { inventory_id: mongoose.Types.ObjectId(main_inventory_id) } // Match the documents with the specified inventory_id
+            $match: { inventory_id: mongoose.Types.ObjectId(req.body.from) } // Match the documents with the specified inventory_id
         },
         {
             $group: {
@@ -103,13 +103,13 @@ exports.confirmOrRefuseCashingInvoice=catchAsync(async(req,res,next)=>{
     ]);
     console.log(data)
     console.log('quntitiy',data[0].totalQuantity)
-    if(data[0].totalQuantity<req.body.quantity) return next(new AppError(`الكمية المطلوبة ليست موجودة بالمخزن`,400))
+    if(data[0].totalQuantity < req.body.quantity) return next(new AppError(`الكمية المطلوبة ليست موجودة بالمخزن`,400))
         
-    const {recipe_id,quantity,price,expire_date,to}=req.body;
+    const {recipe_id,quantity,price,expire_date,from}=req.body;
 
     const from_quantity=quantity * -1;
-    const rec_from_main={
-        inventory_id:main_inventory_id,    
+    const rec_from={
+        inventory_id:from,    
         invoice_id: req.params.id,
         quantity: from_quantity,
         price:0,
@@ -117,21 +117,21 @@ exports.confirmOrRefuseCashingInvoice=catchAsync(async(req,res,next)=>{
         recipe_id:recipe_id
     }
     const rec_to_main={
-        inventory_id:to,    
+        inventory_id:main_inventory_id,    
         invoice_id: req.params.id,
         quantity: quantity,
         price:0,
         expire_date:expire_date,
         recipe_id:recipe_id
     }
-        const decrease_quantity_from = await RecipeQuantity.create(rec_from_main)
+        const decrease_quantity_from = await RecipeQuantity.create(rec_from)
         const increase_quantity_to = await RecipeQuantity.create(rec_to_main)
 
         // TEST MODE
-        
+        /*
         const data1 = await RecipeQuantity.aggregate([
             {
-                $match: { inventory_id: mongoose.Types.ObjectId(main_inventory_id) } // Match the documents with the specified inventory_id
+                $match: { inventory_id: mongoose.Types.ObjectId(from) } // Match the documents with the specified inventory_id
             },
             {
                 $group: {
@@ -142,7 +142,7 @@ exports.confirmOrRefuseCashingInvoice=catchAsync(async(req,res,next)=>{
         ]);
         const data2 = await RecipeQuantity.aggregate([
             {
-                $match: { inventory_id: mongoose.Types.ObjectId(to) } // Match the documents with the specified inventory_id
+                $match: { inventory_id: mongoose.Types.ObjectId(main_inventory_id) } // Match the documents with the specified inventory_id
             },
             {
                 $group: {
@@ -151,15 +151,15 @@ exports.confirmOrRefuseCashingInvoice=catchAsync(async(req,res,next)=>{
                 }
             }
         ]);
-    
+    */
         res.status(200).json({
             status:true,
             message:"invoice full filled",
-            data1,
-            data2,
+          /*  data_from:data1,
+            data_main:data2,
             increase_quantity_to,
             decrease_quantity_from
-
+            */
         })
     
         

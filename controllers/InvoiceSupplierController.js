@@ -34,6 +34,7 @@ exports.createSupplierInvoice = catchAsync(async (req, res, next) => {
     if(!inventory||inventory.place.kind!=='رئيسي') 
         return next(new AppError(`don't have permission or inventory not found`,400))
         req.body.kind='وارد'
+        req.body.to=main_inventory_id
         const doc = new Invoice(req.body);
         const id = doc._id.toString();
 
