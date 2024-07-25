@@ -1,9 +1,10 @@
 const multer = require('multer')
 const sharp = require('sharp');
 const fs = require('fs')
-const recipe = require('../models/recipeModel')
+const Recipe = require('../models/recipeModel')
 const AppError = require('../utils/appError')
-const {catchAsync} = require('../utils/catchAsync')
+const {catchAsync} = require('../utils/catchAsync');
+const RecipeQuantity = require('../models/recipeQuantity');
 
 const multerFilter = (req, file, cb) => {
 
@@ -38,7 +39,7 @@ exports.resizerecipePhoto = catchAsync(async (req, res, next) => {
 
 
 exports.createrecipe = catchAsync(async (req, res, next) => {
-    const doc = new recipe(req.body);
+    const doc = new Recipe(req.body);
     const id = doc._id.toString();
 
     if (!doc) {
@@ -56,19 +57,26 @@ exports.createrecipe = catchAsync(async (req, res, next) => {
     }
 
     await doc.save();
+
+    
+    console.log(id)
+      const recipeQuantity = new RecipeQuantity({recipe_id:id});
+
+      await recipeQuantity.save({ validateBeforeSave: false });
     res.status(201).json({
         status: true,
         message: "recipe created Successfully",
-        data: doc
+        recipe: doc,
+        recipeQuantity
     })
 })
 
 exports.getrecipes = catchAsync(async (req, res, next) => {
-    const subrecipeCategories = await recipe.find();
-    if (!subrecipeCategories || subrecipeCategories.length === 0) return next(new AppError(`no data`, 404))
+    const recipes = await recipe.find();
+    if (!recipes || recipes.length === 0) return next(new AppError(`no data`, 404))
     res.status(200).json({
         status: true,
-        subrecipeCategories
+        recipes
     })
 
 
@@ -77,7 +85,6 @@ exports.getrecipes = catchAsync(async (req, res, next) => {
 
 exports.updaterecipe = catchAsync(async (req, res, next) => {
 
-    c
     const cat = await recipe.findById(req.params.id);
     if (!cat) {
         return next(new AppError(`recipe not found`, 404))

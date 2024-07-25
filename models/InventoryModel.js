@@ -5,6 +5,13 @@ const inventorySchema = new mongoose.Schema({
         type: String,
         unique: [true, "must have a name"]
     },
+    /*
+    kind:{
+        type:String,
+        enum:['رئيسي','فرعي']
+        
+    },
+    */
     place: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Place',
@@ -21,4 +28,5 @@ inventorySchema.pre(/^find/, function (next) {
 
 
 const Inventory = mongoose.model('Inventory', inventorySchema)
-module.exports = Inventory
+
+module.exports=Inventory

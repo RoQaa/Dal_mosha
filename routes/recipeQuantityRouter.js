@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.use(authController.protect)
 router.post('/create',recipeQuantityController.create)
-router.get('/getRecipesQuantity',recipeQuantityController.getRecipesQuantity)
+router.get('/getRecipesQuantity/:inventory_id',recipeQuantityController.getRecipesQuantity)
 router.get('/getOneRecipesQuantity',recipeQuantityController.getOneRecipesQuantity)
 router.patch('/updateRecipe/:id',recipeQuantityController.updateRecipeQuantity)
 router.delete('/deleteRecipe/:id',recipeQuantityController.deleteRecipeQuantity)

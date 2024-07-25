@@ -3,7 +3,7 @@ const repoSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "name required"],
-      
+        unique:[true,'must have unique name']
     },
     desc: {
         type: String,
@@ -13,21 +13,10 @@ const repoSchema = new mongoose.Schema({
         type: String
     },
 
-    inventory: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Inventory",
-        required: [true,"must have In Inventory"]
-    }
-
+  
 
 })
 
-repoSchema.pre(/^find/,function (next){
-    this.populate({
-        path:'inventory',
-        
-    })
-    next();
-})
+
 const Repo = mongoose.model('Repo', repoSchema)
 module.exports = Repo;
