@@ -1,42 +1,24 @@
-/**
- *  'order',
-        'quantity',
-        'remaining',
-        'price',
-        'expire_date',
-        'department_store_id',
-        'invoice_id',
-        'recipe_id',
-        'total_price' => virtual
-*/
-/**        'from',
-        'to',
-        'supplier_id',
-        'code',
-        'invoice_date',
-        'status',
-        'invoice_price',
-        'total_price',
-        'image',
-        'type',
-        'discount',
-        'tax',
-        'note',
-        'is_paid'
-         */
-        //TODO: here for inventory
 const mongoose = require('mongoose');
+
+const twelveMonthsFromNow = () => {
+    let date = new Date();
+    date.setMonth(date.getMonth() + 12);
+    return date;
+};
 const recipeQuantitySchema = new mongoose.Schema({
     quantity: {
         type: Number,
+        default:0,
         required: [true, 'must have quantity']
     },
     price: {
         type: Number,
+        default:0,
         required: [true, 'must have price']
     },
     expire_date: {
         type: Date,
+        default:twelveMonthsFromNow,
         required: [true, 'must have expire_date']
     },
 
@@ -51,6 +33,7 @@ const recipeQuantitySchema = new mongoose.Schema({
         ref: 'recipe',
         required: [true, 'must have recipe_id']
     },
+    
     inventory_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Inventory',

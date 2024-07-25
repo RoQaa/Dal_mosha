@@ -77,8 +77,8 @@ exports.confirmOrRefuseSupplierInvoice=catchAsync(async(req,res,next)=>{
             req.body.inventory_id=doc.to;
             req.body.invoice_id=doc._id
            
-        /**  inventory_id, recipe_id  invoice_id    quantity    price   expire_date*/
-        const {inventory_id,invoice_id,recipe_id,quantity,price,expire_date}=req.body;
+        
+        const {inventory_id,invoice_id,recipeQuantity_id,quantity,price,expire_date}=req.body;
         
         const rec={
             inventory_id:inventory_id,    
@@ -86,14 +86,15 @@ exports.confirmOrRefuseSupplierInvoice=catchAsync(async(req,res,next)=>{
             quantity: quantity,
             price:price,
             expire_date:expire_date,
-            recipe_id:recipe_id
+            
         }
     
-            const recipeQuantity= await RecipeQuantity.create(rec);
+            const recipeQuantity= await RecipeQuantity.findByIdAndUpdate(recipeQuantity_id,rec,{new:true,runValidators:true})
+            if(!recipeQuantity) return next(new AppError('recipe Quantity not found',404))
             res.status(200).json({
                 status:true,
                 message:"Confirmed Successfully",
-                recipeQuantity
+               // recipeQuantity
             })
         
        
